@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(ls -la \"c:\\\\Users\\\\devan\\\\OneDrive\\\\Desktop\\\\marketing-agent-platform\\\\\" 2>/dev/null | grep -E \"^d\")",
+      "Read(//c/Users/devan/OneDrive/Desktop/marketing-agent-platform\" 2>/dev/**)",
+      "Bash(npx tsc *)",
+      "Bash(npm run *)",
+      "Bash(rm -rf lib app/api/agent app/api/run-skill app/api/generate-campaign)",
+      "Bash(ls app/api)",
+      "Bash(ls lib *)",
+      "Bash(netstat -ano)",
+      "Bash(echo \"---EXIT: $?---\")",
+      "Bash(npx tsx *)",
+      "PowerShell(Add-Type -AssemblyName System.IO.Compression.FileSystem; $out = \"c:\\\\Users\\\\devan\\\\OneDrive\\\\Desktop\\\\TOP\\\\DEVANSH_GAUNIYAL_RESUME.pdf.docx\"; $zip = [System.IO.Compression.ZipFile]::OpenRead\\($out\\); $entry = $zip.GetEntry\\(\"word/document.xml\"\\); $reader = New-Object System.IO.StreamReader\\($entry.Open\\(\\)\\); $text = $reader.ReadToEnd\\(\\); $reader.Close\\(\\); $zip.Dispose\\(\\); foreach \\($needle in @\\(\"Autonomous Marketing Agent Platform\",\"Gemini 2.5 Pro/Flash\",\"deterministic SEO orchestrator\",\"Octokit connector\",\"node-cron scheduler\",\"TypeScript, JavaScript, C++\",\"Node.js, Express, Next.js\",\"Google Gemini API\"\\)\\) { Write-Output \\(\"contains [$needle] = \" + $text.Contains\\($needle\\)\\) })"
+    ]
+  }
+}

@@ -1,0 +1,786 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MarketPilot AI — Study Notes</title><style>@page { size: A4; margin: 18mm 16mm; }
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 11.5pt;
+  line-height: 1.55;
+  color: #1f2937;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #fff;
+}
+h1, h2, h3, h4 { color: #0f172a; line-height: 1.25; margin-top: 1.6em; margin-bottom: 0.4em; }
+h1 { font-size: 22pt; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.3em; page-break-before: always; }
+h1:first-of-type { page-break-before: avoid; }
+h2 { font-size: 16pt; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.2em; }
+h3 { font-size: 13pt; }
+h4 { font-size: 11.5pt; }
+p { margin: 0.6em 0; }
+a { color: #4f46e5; text-decoration: none; }
+ul, ol { padding-left: 1.4em; margin: 0.6em 0; }
+li { margin: 0.25em 0; }
+code {
+  font-family: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  font-size: 0.92em;
+  background: #f1f5f9;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  color: #be185d;
+}
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 9.5pt;
+  line-height: 1.45;
+  page-break-inside: avoid;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+blockquote {
+  border-left: 4px solid #6366f1;
+  background: #eef2ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #312e81;
+  border-radius: 0 6px 6px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 10.5pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: #f1f5f9; font-weight: 600; }
+tr:nth-child(even) td { background: #fafafa; }
+hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1.5em 0; }
+strong { color: #0f172a; }
+.cover {
+  text-align: center;
+  padding: 60px 0 80px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+.cover h1 {
+  font-size: 30pt; border: 0; padding: 0; margin: 0 0 10px;
+  page-break-before: avoid;
+}
+.cover .sub { color: #64748b; font-size: 12pt; }
+@media print {
+  body { padding: 0; }
+  a { color: #1f2937; }
+}</style></head><body><div class="cover">
+  <h1>MarketPilot AI — Study Notes</h1>
+  <div class="sub">Beginner-friendly architecture and interview prep<br/>Devansh · 2026</div>
+</div><h1 id="marketpilot-ai-study-notes">MarketPilot AI — Study Notes</h1>
+<p>These are your interview-ready notes. Read top to bottom the first time. After that, jump to any section.</p>
+<hr />
+<h2 id="table-of-contents">Table of contents</h2>
+<ol>
+<li><a href="#1-what-is-marketpilot-ai">What is MarketPilot AI? (one paragraph)</a></li>
+<li><a href="#2-the-problem-this-solves">The problem this solves</a></li>
+<li><a href="#3-big-picture--how-the-pieces-fit">Big picture — how the pieces fit</a></li>
+<li><a href="#4-tech-stack--what-each-tool-is-and-why-we-chose-it">Tech stack — what each tool is and why we chose it</a></li>
+<li><a href="#5-what-is-an-ai-agent-the-most-important-concept">What is an AI agent? (the most important concept)</a></li>
+<li><a href="#6-the-autonomy-tiers--green-yellow-red">The autonomy tiers — GREEN, YELLOW, RED</a></li>
+<li><a href="#7-skills-vs-tools-vs-connectors">Skills vs. Tools vs. Connectors</a></li>
+<li><a href="#8-the-frontend--whats-there">The frontend — what's there</a></li>
+<li><a href="#9-the-backend--whats-there">The backend — what's there</a></li>
+<li><a href="#10-the-9-stores--our-database-in-memory">The 9 stores — our database (in memory)</a></li>
+<li><a href="#11-the-api-endpoints">The API endpoints</a></li>
+<li><a href="#12-what-weve-built-step-by-step">What we've built, step by step</a></li>
+<li><a href="#13-glossary-of-every-term">Glossary of every term</a></li>
+<li><a href="#14-interview-questions--good-answers">Interview questions + good answers</a></li>
+<li><a href="#15-whats-not-built-yet-be-honest">What's NOT built yet (be honest)</a></li>
+<li><a href="#16-how-to-run-test-demo">How to run, test, demo</a></li>
+</ol>
+<hr />
+<h2 id="what-is-marketpilot-ai">1. What is MarketPilot AI?</h2>
+<p><strong>One sentence:</strong> It's a website you can log into where AI agents do real marketing work for your product — SEO audits, ad campaigns, copy drafts, competitor research — and ask you to approve the riskier ones before doing them.</p>
+<p><strong>Slightly longer:</strong> You connect your product (website URL, ad accounts, CMS, etc.), describe what your product is and who it's for, and then click a &quot;Launch Agents&quot; button. Specialist AI agents go off, <strong>actually read your website</strong>, <strong>actually crawl competitor pages</strong>, <strong>actually draft copy</strong>, <strong>save findings</strong>, and come back with a report PLUS a list of concrete actions you can approve with one click.</p>
+<p>Not &quot;AI shows you a chatbot.&quot; More like &quot;AI is a marketing team in a tab.&quot;</p>
+<hr />
+<h2 id="the-problem-this-solves">2. The problem this solves</h2>
+<p>Small companies need a marketing team. They can't afford one. The old answer was &quot;use a SaaS tool.&quot; But SaaS tools just <strong>show you data</strong>. They don't <strong>do the work</strong>. You still need a human to:</p>
+<ul>
+<li>Read the data</li>
+<li>Decide what to do</li>
+<li>Open the CMS and update the page</li>
+<li>Open Meta Ads and pause the bad ad set</li>
+<li>Write the email</li>
+<li>Send the email</li>
+</ul>
+<p>MarketPilot AI is built so the agent does as much of that as it safely can, asks you only when the stakes are high, and <strong>never</strong> does anything destructive without a rollback path. That's the whole pitch.</p>
+<hr />
+<h2 id="big-picture-how-the-pieces-fit">3. Big picture — how the pieces fit</h2>
+<p>Imagine a kitchen.</p>
+<ul>
+<li><strong>The customer (you, Devansh, or a paying user)</strong> orders food → that's the <strong>frontend</strong>: the buttons, screens, forms.</li>
+<li><strong>The waiter</strong> carries the order to the kitchen → that's the <strong>API</strong>: the HTTP endpoints.</li>
+<li><strong>The head chef</strong> (the AI agent) reads the order and decides what dishes to cook → that's the <strong>agent loop</strong> running on the backend.</li>
+<li><strong>The pantry</strong> holds the ingredients: olive oil, salt, vegetables → those are the <strong>tools</strong> (web_search, crawl_site, audit_seo, write_draft).</li>
+<li><strong>The supplier trucks</strong> bring the ingredients in from outside the kitchen — vegetables from a farm, oil from a factory → those are the <strong>connectors</strong> (the cheerio site connector that goes out to the public web; later: GA4 connector, GitHub connector, Meta Ads connector).</li>
+<li><strong>The recipe books</strong> explain how to cook each dish → those are the <strong>skills</strong> (<code>SKILL.md</code> files for SEO Audit, Copywriting, Paid Ads, etc.).</li>
+<li><strong>The notebook the chef writes in</strong> — &quot;tonight I salted the steak, tomorrow I'll add pepper&quot; → that's the <strong>event log</strong> + <strong>stores</strong> (every action recorded for later).</li>
+<li><strong>The &quot;I need the customer's go-ahead before I serve the wasabi&quot;</strong> rule → that's the <strong>tier gate</strong> (GREEN = serve immediately, YELLOW = serve but say something, RED = ask the customer first).</li>
+</ul>
+<p>That's everything. Now the rest of these notes just put names to those parts.</p>
+<hr />
+<h2 id="tech-stack-what-each-tool-is-and-why-we-chose-it">4. Tech stack — what each tool is and why we chose it</h2>
+<h3 id="frontend">Frontend</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it is</th>
+<th>Why we use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Next.js</strong> (App Router)</td>
+<td>A React framework. Lets you build a website with multiple pages, fast loading, server-side rendering.</td>
+<td>Industry standard. Vercel made it. Has built-in routing, image optimization, and works with TypeScript out of the box.</td>
+</tr>
+<tr>
+<td><strong>React</strong></td>
+<td>A library for building user interfaces from small reusable pieces called &quot;components&quot; (like Lego blocks).</td>
+<td>The most popular UI library in the world. Almost every modern web app uses it.</td>
+</tr>
+<tr>
+<td><strong>TypeScript</strong></td>
+<td>JavaScript + type safety. You write <code>let age: number = 5;</code> and TypeScript catches it if you accidentally try to do <code>age = &quot;five&quot;</code>.</td>
+<td>Stops bugs before they happen. Auto-complete in the editor. Required for serious projects.</td>
+</tr>
+<tr>
+<td><strong>Tailwind CSS</strong></td>
+<td>A CSS framework where instead of writing custom CSS, you put utility classes right in your HTML: <code>&lt;div class=&quot;bg-blue-500 p-4 rounded-xl&quot;&gt;</code>.</td>
+<td>Fast to build with. Consistent look. No need to invent new class names. Easy to delete unused code.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="backend">Backend</h3>
+<table>
+<thead>
+<tr>
+<th>Tool</th>
+<th>What it is</th>
+<th>Why we use it</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Node.js</strong></td>
+<td>JavaScript that runs on the server (not in the browser).</td>
+<td>Same language as the frontend. One mental model. Huge ecosystem.</td>
+</tr>
+<tr>
+<td><strong>Express</strong></td>
+<td>A thin HTTP framework for Node.js. You write <code>app.get(&quot;/health&quot;, (req, res) =&gt; res.json({ok:true}))</code> and you have an API.</td>
+<td>Simple, mature, well-documented. Fine for our scale.</td>
+</tr>
+<tr>
+<td><strong>TypeScript</strong></td>
+<td>Same as frontend.</td>
+<td>Same reason.</td>
+</tr>
+<tr>
+<td><strong>Google Gemini</strong></td>
+<td>Google's AI model (similar to OpenAI's GPT or Anthropic's Claude). We use <strong>Gemini 2.5 Flash</strong> (fast, cheap, good enough) and plan to add <strong>Gemini 2.5 Pro</strong> for harder planning tasks.</td>
+<td>Has reliable &quot;function calling&quot; (the AI can decide to call our tools). Free tier is generous for development.</td>
+</tr>
+<tr>
+<td><strong>cheerio</strong></td>
+<td>A library that parses HTML and lets you query it like jQuery — <code>$('h1').text()</code> gives you the H1.</td>
+<td>Lightweight, fast, doesn't require a real browser. Perfect for SEO crawling where we just want the page structure.</td>
+</tr>
+<tr>
+<td><strong>In-memory <code>Map</code>s</strong></td>
+<td>JavaScript's built-in key/value data structure. Like a dictionary.</td>
+<td>We don't need a real database yet. When we do, we swap these out for SQLite, then Postgres.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="what-we-dont-use-yet-and-why-well-add-them-later">What we <strong>don't</strong> use yet (and why we'll add them later)</h3>
+<ul>
+<li><strong>Postgres / SQLite</strong> — real databases. Will replace <code>Map</code>s when we need data to survive a restart.</li>
+<li><strong>Inngest / node-cron</strong> — schedulers. Will add when we need &quot;run SEO audit every Monday.&quot;</li>
+<li><strong>Clerk / Supabase Auth</strong> — login/signup. Will add when there's more than one user.</li>
+<li><strong>Anthropic Claude SDK</strong> — alternative LLM. We picked Gemini; could switch later.</li>
+</ul>
+<p>The <strong>framework spec</strong> (<code>marketing-agent-framework.md</code>) lists all the &quot;real production&quot; tools. We picked simpler equivalents because we're solo and pre-launch. <strong>This is a normal engineering tradeoff</strong> and you should be able to defend it in an interview: <em>&quot;We code to the interface, not the implementation. When the simpler tool stops fitting, the swap is small because the rest of the code doesn't know which tool is underneath.&quot;</em></p>
+<hr />
+<h2 id="what-is-an-ai-agent-the-most-important-concept">5. What is an AI agent? (the most important concept)</h2>
+<p>In plain English: an <strong>AI agent</strong> is when you give an AI model a <strong>goal</strong> and a <strong>list of tools it can use</strong>, and the AI decides — by itself, one step at a time — which tools to call until the goal is done.</p>
+<h3 id="what-it-is-not">What it is NOT</h3>
+<ul>
+<li>It's not a chatbot. A chatbot says &quot;here's an answer.&quot; An agent says &quot;I should call tool A, then look at the result, then call tool B.&quot;</li>
+<li>It's not a single API call. It's a <strong>loop</strong> — call AI, AI says &quot;use tool X&quot;, we run tool X, we send the result back to the AI, repeat.</li>
+</ul>
+<h3 id="how-it-works-in-our-code">How it works in our code</h3>
+<p>The loop lives in <a href="backend/src/lib/agent-loop.ts">backend/src/lib/agent-loop.ts</a>. Here's what happens in plain English:</p>
+<ol>
+<li><strong>You click &quot;Launch Agents&quot;</strong> in the frontend.</li>
+<li>The frontend calls <code>POST /api/agent/start</code> with the campaign brief.</li>
+<li>The backend creates a new &quot;skill run&quot; record (a database row).</li>
+<li>The backend builds a long prompt: &quot;You are MarketPilot AI. Here's the brief. Here are the tools you can use. Get the work done.&quot;</li>
+<li>The backend sends that prompt to <strong>Gemini</strong> along with the list of tools.</li>
+<li>Gemini responds with one of two things:
+<ul>
+<li><strong>&quot;Call this tool with these arguments&quot;</strong> (e.g. <code>audit_seo(&quot;https://example.com&quot;)</code>)</li>
+<li><strong>&quot;I'm done. Here's the final report.&quot;</strong> (it calls a special tool called <code>finish</code>)</li>
+</ul>
+</li>
+<li>If Gemini wants to call a tool:
+<ul>
+<li><strong>The tier gate runs first</strong> (see next section).</li>
+<li>If allowed, we run the tool. The tool returns a result.</li>
+<li>We add the result to the conversation and send it back to Gemini.</li>
+</ul>
+</li>
+<li>Gemini sees the result and decides the next step. Repeat from step 6.</li>
+<li>Loop ends when Gemini calls <code>finish</code> OR we hit a max of 12 tool calls (a safety cap).</li>
+</ol>
+<p>The technical term for this is <strong>ReAct loop</strong> (<strong>Re</strong>ason + <strong>Act</strong>). Most modern AI agents work this way.</p>
+<h3 id="why-this-is-powerful">Why this is powerful</h3>
+<p>Because each tool can do a small, reliable thing — fetch a URL, parse HTML, run a check — and the AI is the <strong>glue</strong> that chooses the order. You don't have to write the marketing logic; the AI does. You just have to write <strong>safe, predictable tools</strong>.</p>
+<hr />
+<h2 id="the-autonomy-tiers-green-yellow-red">6. The autonomy tiers — GREEN, YELLOW, RED</h2>
+<p>This is the <strong>single most important design idea</strong> in MarketPilot AI. Memorize this.</p>
+<p>The agent has access to many tools. Some are safe to run automatically. Some need a human sign-off. We use three lanes:</p>
+<table>
+<thead>
+<tr>
+<th>Tier</th>
+<th>Color</th>
+<th>What it means</th>
+<th>Examples</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>GREEN</strong></td>
+<td>🟢</td>
+<td>Pure reads. Run automatically. Don't bother the user.</td>
+<td><code>web_search</code>, <code>read_url</code>, <code>crawl_site</code>, <code>audit_seo</code>, <code>fetch_analytics</code></td>
+</tr>
+<tr>
+<td><strong>YELLOW</strong></td>
+<td>🟡</td>
+<td>Makes a small reversible change. Run automatically, but <strong>log it loudly</strong> so the user sees what happened and can undo.</td>
+<td><code>write_draft</code>, <code>update_meta_tag</code>, <code>publish_blog_post</code>, <code>pause_underperforming_ad</code></td>
+</tr>
+<tr>
+<td><strong>RED</strong></td>
+<td>🔴</td>
+<td>High stakes or hard to undo. <strong>Do not run.</strong> Create an approval record. Wait for a human to say yes.</td>
+<td><code>send_email_to_full_list</code>, <code>launch_ad_campaign</code>, <code>change_pricing</code>, <code>delete_page</code></td>
+</tr>
+</tbody>
+</table>
+<h3 id="how-its-enforced">How it's enforced</h3>
+<p>Every tool declares its tier in <a href="backend/src/lib/agent-tools.ts">backend/src/lib/agent-tools.ts</a>:</p>
+<pre><code class="language-ts">export const toolMeta: Record&lt;string, ToolMeta&gt; = {
+  web_search: { tier: &quot;GREEN&quot; },
+  read_url:   { tier: &quot;GREEN&quot; },
+  crawl_site: { tier: &quot;GREEN&quot; },
+  audit_seo:  { tier: &quot;GREEN&quot; },
+  write_draft: { tier: &quot;YELLOW&quot; },
+};
+</code></pre>
+<p>Then a <strong>single function</strong> called the <strong>tier gate</strong> in <a href="backend/src/lib/agent/tier-gate.ts">backend/src/lib/agent/tier-gate.ts</a> is called <strong>before every tool dispatch</strong>:</p>
+<pre><code>agent says &quot;call tool X&quot;
+   ↓
+tier-gate checks: what tier is X?
+   ↓
+   GREEN  → run it, log the decision, return result
+   YELLOW → run it, log a &quot;notify&quot; event, return result
+   RED    → DON'T run it. Create an approval record. Tell the AI &quot;blocked&quot;.
+</code></pre>
+<h3 id="two-key-rules">Two key rules</h3>
+<ol>
+<li><strong>Tier checks happen at the gate, not in the tool body.</strong> The tool itself doesn't know about tiers. It assumes it's allowed. This means <strong>forgetting the gate is impossible by accident</strong>.</li>
+<li><strong>Unknown tools default to RED.</strong> If the agent asks for a tool we don't recognize, the gate blocks it. We call this <strong>failing closed</strong> — when in doubt, refuse.</li>
+</ol>
+<h3 id="budget-guards-separate-idea-but-related">Budget guards (separate idea, but related)</h3>
+<p>Even within a tier, there are <strong>hard caps</strong>:</p>
+<ul>
+<li>Max ad spend per day</li>
+<li>Max email recipients per send</li>
+<li>Max pages modified per day</li>
+</ul>
+<p>If a call would exceed a cap, <strong>it becomes RED regardless of its declared tier</strong>. Money/blast-radius limits override autonomy.</p>
+<hr />
+<h2 id="skills-vs.tools-vs.connectors">7. Skills vs. Tools vs. Connectors</h2>
+<p>This is the second most important design idea. Three different things, often confused:</p>
+<table>
+<thead>
+<tr>
+<th>Concept</th>
+<th>What it is</th>
+<th>Where it lives</th>
+<th>Example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Skill</strong></td>
+<td>A piece of <strong>marketing knowledge</strong>. A markdown document that says &quot;this is how to run an SEO audit.&quot; Tells the AI <strong>how to think</strong>.</td>
+<td><code>.agents/skills/&lt;skill-id&gt;/SKILL.md</code></td>
+<td><code>seo-audit/SKILL.md</code>: &quot;First check the title, then headings, then schema...&quot;</td>
+</tr>
+<tr>
+<td><strong>Tool</strong></td>
+<td>A <strong>verb</strong>. A small function the agent can actually call. Has a name, a typed input, a tier, and an implementation.</td>
+<td><code>backend/src/lib/agent-tools.ts</code></td>
+<td><code>audit_seo(url)</code> → returns findings</td>
+</tr>
+<tr>
+<td><strong>Connector</strong></td>
+<td>A <strong>typed adapter</strong> that talks to one external service. Declares its capabilities.</td>
+<td><code>backend/src/lib/connectors/</code></td>
+<td><code>cheerioSiteConnector</code> knows how to fetch and parse a webpage</td>
+</tr>
+</tbody>
+</table>
+<h3 id="the-rule-that-ties-them-together">The rule that ties them together</h3>
+<p><strong>Skills never make HTTP calls.</strong> <strong>Tools never read other skills.</strong> <strong>Connectors never make decisions.</strong></p>
+<ul>
+<li>Skills are pure knowledge. They tell the agent what to think about.</li>
+<li>Tools are pure verbs. They execute one action.</li>
+<li>Connectors are pure adapters. They talk to one outside service.</li>
+</ul>
+<h3 id="why-this-separation-matters">Why this separation matters</h3>
+<p>If you mix them up, you get a mess where you can't swap the LLM, you can't swap the database, and adding a new feature requires editing 10 files. Keeping them separate means:</p>
+<ul>
+<li>You can add a new skill (e.g. &quot;TikTok content strategy&quot;) by just writing a new markdown file.</li>
+<li>You can add a new tool (e.g. <code>pause_meta_ad</code>) by adding one function and one registry entry.</li>
+<li>You can replace the cheerio connector with a Playwright connector (heavier, runs JS) by changing one file.</li>
+</ul>
+<hr />
+<h2 id="the-frontend-whats-there">8. The frontend — what's there</h2>
+<p>All the UI currently lives in <strong>one file</strong>: <a href="frontend/app/page.tsx">frontend/app/page.tsx</a> (~1670 lines). We'll split it into views/components in a later step.</p>
+<h3 id="screens-implemented-with-mock-data">Screens implemented (with mock data)</h3>
+<ol>
+<li><strong>Dashboard</strong> — &quot;Good evening, Devansh&quot;, stat cards, live agent run cards with progress bars, proposed actions, activity feed, recent drafts.</li>
+<li><strong>Campaigns</strong> (this is the <strong>Workstreams</strong> screen from the framework) — agent run detail. Shows a console-style trace of what the agent is doing (<code>tool_call</code>, <code>tool_result</code>, <code>thought</code>, <code>error</code>), plus stats, competitor keyword analysis, technical fixes, projected traffic chart.</li>
+<li><strong>Product Profile</strong> — form to describe your product: Identity (name, pitch, industry, stage), Narrative (long description), Brand DNA (voice, do's/don'ts, colors), KPIs, Ecosystem (the integrations panel — Website, GA4, Meta Ads, WordPress).</li>
+</ol>
+<h3 id="screens-not-yet-built-placeholders-only">Screens NOT yet built (placeholders only)</h3>
+<ol start="4">
+<li><strong>Agents</strong> → will become <strong>Chat</strong></li>
+<li><strong>Drafts</strong> → standalone drafts gallery</li>
+<li><strong>Proposed Actions</strong> → will become the <strong>Approvals Inbox</strong></li>
+<li><strong>SEO Reports</strong> → will become the <strong>Audits</strong> history</li>
+<li><strong>Integrations</strong> → real OAuth flows</li>
+<li><strong>Settings</strong></li>
+</ol>
+<h3 id="the-design-system">The design system</h3>
+<p>The whole UI uses a consistent palette:</p>
+<ul>
+<li><strong>Background</strong>: slate-50 (very light gray) for pages, white for cards</li>
+<li><strong>Primary action</strong>: indigo-600 (the buttons), often with a gradient to violet-600</li>
+<li><strong>Status colors</strong>: emerald (success), amber (warning), rose (danger), slate (neutral)</li>
+<li><strong>Shape</strong>: <code>rounded-2xl</code> cards with subtle borders, <code>rounded-xl</code> buttons</li>
+<li><strong>Spacing</strong>: generous whitespace, <code>gap-4</code> between grid items</li>
+<li><strong>Motion</strong>: pulsing dots for &quot;live&quot;, soft progress bar animations, hover lifts</li>
+</ul>
+<h3 id="state-management">State management</h3>
+<p>Just <strong>React's built-in <code>useState</code></strong>. No Redux, no Zustand. The framework spec says we don't need anything bigger until we have realtime multi-user state — which is far away.</p>
+<h3 id="how-frontend-talks-to-backend">How frontend talks to backend</h3>
+<p>The backend runs on <code>http://localhost:4000</code>. The frontend calls it with <code>fetch(...)</code>. Currently this is inline in <code>page.tsx</code>. The plan is to extract every call to <code>frontend/app/lib/api.ts</code> so we have one file that knows about every endpoint.</p>
+<hr />
+<h2 id="the-backend-whats-there">9. The backend — what's there</h2>
+<h3 id="folder-structure-the-parts-that-exist-today">Folder structure (the parts that exist today)</h3>
+<pre><code>backend/
+├── package.json
+├── tsconfig.json
+└── src/
+    ├── server.ts                # Express bootstrap — CORS, /health, mounts routes
+    ├── routes/
+    │   └── agent.ts             # /api/agent/start, /api/agent/:id, /api/agent/:id/approve
+    └── lib/
+        ├── agent-loop.ts        # The agent loop (the ReAct loop from §5)
+        ├── agent-tools.ts       # Tool declarations + tier registry + dispatch
+        ├── agent/
+        │   ├── tier-gate.ts     # The gate function
+        │   ├── index.ts         # barrel re-export
+        │   └── __tests__/
+        │       └── tier-gate.test.ts
+        ├── connectors/
+        │   ├── types.ts         # SiteConnector interface, CrawledPage type
+        │   ├── site/
+        │   │   └── cheerio.ts   # The HTML crawler/parser
+        │   └── index.ts
+        ├── tools/
+        │   └── seo/
+        │       ├── audit-checks.ts  # The ~10 SEO checks + scorer
+        │       └── __tests__/
+        │           └── audit-seo.test.ts
+        └── store/                # All 9 stores (next section)
+            ├── types.ts
+            ├── workspaces.ts
+            ├── product-profile.ts
+            ├── connections.ts
+            ├── skill-runs.ts
+            ├── tool-calls.ts
+            ├── approvals.ts
+            ├── audits.ts
+            ├── performance.ts
+            ├── events.ts
+            └── index.ts
+</code></pre>
+<h3 id="the-flow-of-one-request">The flow of one request</h3>
+<p>When the frontend clicks &quot;Launch Agents&quot;:</p>
+<pre><code>1. POST /api/agent/start  →  routes/agent.ts
+2.   create a skill run    →  store/skill-runs.ts
+3.   kick off the loop     →  lib/agent-loop.ts (runs in background)
+4.   return { taskId }     →  frontend
+5. (background) loop calls Gemini, gets a tool call back
+6.   tier-gate checks tier →  lib/agent/tier-gate.ts
+7.   gate writes event     →  store/events.ts
+8.   if allowed, dispatch  →  lib/agent-tools.ts → e.g. cheerioSiteConnector.crawl()
+9.   save audit            →  store/audits.ts
+10.  send result to Gemini, loop
+11.  Gemini calls &quot;finish&quot; → finalReport saved on the skill run
+</code></pre>
+<p>Meanwhile the frontend polls <code>GET /api/agent/:taskId</code> every 1.5 seconds to update the UI live.</p>
+<hr />
+<h2 id="the-9-stores-our-database-in-memory">10. The 9 stores — our database (in memory)</h2>
+<p>A <strong>store</strong> is just a file that holds one kind of data in a JavaScript <code>Map</code>, exposes a few methods (<code>create</code>, <code>get</code>, <code>list</code>, <code>update</code>), and hides the <code>Map</code> from the rest of the code.</p>
+<p>We split data into 9 stores because the framework spec asks for them. Each one will become a database table later.</p>
+<table>
+<thead>
+<tr>
+<th>Store</th>
+<th>Holds</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><a href="backend/src/lib/store/workspaces.ts">workspaces.ts</a></td>
+<td>The single default workspace (<code>ws_default</code>)</td>
+<td>Every other store references it</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/product-profile.ts">product-profile.ts</a></td>
+<td>The product description form (name, industry, voice, KPIs, etc.). One per workspace.</td>
+<td>The agent reads this as memory before every run (planned). Frontend reads/writes via API (planned).</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/connections.ts">connections.ts</a></td>
+<td>Site URL, GA4, GSC, Meta Ads, WordPress, etc.</td>
+<td>Connectors look up their config here.</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/skill-runs.ts">skill-runs.ts</a></td>
+<td>Every agent run — its status, steps, drafts, final report. <strong>This is the one currently doing real work.</strong></td>
+<td>The agent loop writes to it; the frontend polls it.</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/tool-calls.ts">tool-calls.ts</a></td>
+<td>One record per tool invocation, with rollback payload.</td>
+<td>Currently empty — will be filled when we add real write tools.</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/approvals.ts">approvals.ts</a></td>
+<td>First-class approval records (RED-tier blocked calls).</td>
+<td>Tier gate creates these on RED. Inbox UI (Step 4) reads them.</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/audits.ts">audits.ts</a></td>
+<td>Persistent SEO/CRO/ads audits. <strong>Step 3 fills this.</strong></td>
+<td><code>audit_seo</code> writes; <code>/api/audits</code> reads.</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/performance.ts">performance.ts</a></td>
+<td>Daily snapshots: traffic, MRR, CAC, churn.</td>
+<td>Currently empty. Scheduler fills it daily (Step 6+).</td>
+</tr>
+<tr>
+<td><a href="backend/src/lib/store/events.ts">events.ts</a></td>
+<td>Append-only log of every meaningful event.</td>
+<td>Tier gate writes here. <code>/api/events</code> reads.</td>
+</tr>
+</tbody>
+</table>
+<h3 id="why-this-split-is-interview-worthy">Why this split is interview-worthy</h3>
+<p>If an interviewer asks <strong>&quot;why split it instead of one big store?&quot;</strong>, here's the answer:</p>
+<ol>
+<li><strong>Each store has one job</strong>, so changes are local. Changing how audits work doesn't touch how skill runs work.</li>
+<li><strong>Each store maps directly to a future database table.</strong> When we switch to SQLite, each store becomes a table with the same fields. The rest of the code doesn't change.</li>
+<li><strong>Each store has a stable interface</strong> (<code>create</code>, <code>get</code>, <code>list</code>). The implementation (Map vs SQLite vs Postgres) is hidden.</li>
+<li>This is called <strong>separation of concerns</strong> and <strong>the repository pattern</strong>. Both are textbook software design principles.</li>
+</ol>
+<hr />
+<h2 id="the-api-endpoints">11. The API endpoints</h2>
+<p>This is the contract between frontend and backend. All endpoints live in <a href="backend/src/server.ts">backend/src/server.ts</a> and <a href="backend/src/routes/agent.ts">backend/src/routes/agent.ts</a>.</p>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+<th>Used by</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/health</code></td>
+<td>Sanity check — is the server alive?</td>
+<td>Anyone, deploy probes</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/agent/start</code></td>
+<td>Start a new agent run. Body: skillId + campaign brief. Returns <code>{ taskId }</code>.</td>
+<td>Frontend &quot;Launch Agents&quot; button</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/agent/:taskId</code></td>
+<td>Poll status of a run.</td>
+<td>Frontend polls this every 1.5–3 seconds</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/agent/:taskId/approve</code></td>
+<td>Approve/reject a proposed action. Body: <code>{ actionId, approved }</code>.</td>
+<td>Frontend Approve/Reject buttons</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/events</code></td>
+<td>Read the tail of the event log (every tool call, gate decision, etc.).</td>
+<td>Devs (for now); future Activity feed</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/audits</code></td>
+<td>List all SEO audits.</td>
+<td>Devs (for now); future Audits screen</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/audits/:id</code></td>
+<td>Drill into one audit.</td>
+<td>Devs (for now); future Audits screen</td>
+</tr>
+</tbody>
+</table>
+<h3 id="planned-endpoints-will-appear-in-future-steps">Planned endpoints (will appear in future steps)</h3>
+<p><code>GET/PUT /api/profile</code>, <code>GET/POST /api/connections</code>, <code>GET /api/approvals</code>, <code>POST /api/approvals/:id/decide</code>, <code>GET /api/skill-runs</code>, <code>POST /api/chat</code>.</p>
+<hr />
+<h2 id="what-weve-built-step-by-step">12. What we've built, step by step</h2>
+<p>This is the historical narrative — useful for an interviewer asking <em>&quot;walk me through your work.&quot;</em></p>
+<h3 id="phase-0-initial-ui-prototype-before-structured-steps">Phase 0 — Initial UI prototype (before structured steps)</h3>
+<ul>
+<li>Built a single-page Next.js dashboard with mock data.</li>
+<li>Got familiar with Tailwind + the SaaS dashboard style.</li>
+<li>Connected sidebar → main view rendering pattern.</li>
+<li>Had a working but limited Express backend that called Gemini in a basic loop.</li>
+</ul>
+<h3 id="step-1-storage-restructure">Step 1 — Storage restructure</h3>
+<p><strong>Goal:</strong> Split the single <code>agent-store.ts</code> into 9 typed stores. No behavior change.</p>
+<p><strong>Why:</strong> Future features (tier system, connectors, approvals UI, scheduler) need clean seams to write to the right place. One tangled <code>Map</code> would force them to all touch the same file.</p>
+<p><strong>What we did:</strong></p>
+<ul>
+<li>Created <code>backend/src/lib/store/types.ts</code> with every shared type (<code>Workspace</code>, <code>ProductProfile</code>, <code>Connection</code>, <code>SkillRun</code>, <code>ToolCall</code>, <code>Approval</code>, <code>Audit</code>, <code>PerformanceSnapshot</code>, <code>AgentEvent</code>).</li>
+<li>Created 9 store files, each with its own <code>Map</code> and CRUD methods.</li>
+<li>Migrated all logic from the old <code>agent-store.ts</code> into <code>store/skill-runs.ts</code>.</li>
+<li>Updated import sites in <code>agent-loop.ts</code>, <code>agent-tools.ts</code>, <code>routes/agent.ts</code>.</li>
+<li>Deleted the old file.</li>
+<li>Type-check clean. All endpoints return identical JSON.</li>
+</ul>
+<p><strong>Interview soundbite:</strong> <em>&quot;I refactored the single-file in-memory store into 9 typed stores using the repository pattern, so each domain entity has a clean seam. JSON wire format stayed byte-compatible — frontend didn't notice the rename.&quot;</em></p>
+<h3 id="step-2-tier-system">Step 2 — Tier system</h3>
+<p><strong>Goal:</strong> Add the GREEN/YELLOW/RED gate that runs before every tool dispatch.</p>
+<p><strong>Why:</strong> Framework rule §5.2 — &quot;tier checks happen at the gate, not in the tool body.&quot; This is the central safety mechanism.</p>
+<p><strong>What we did:</strong></p>
+<ul>
+<li>Added a <code>toolMeta</code> registry in <code>agent-tools.ts</code> mapping each tool to its tier.</li>
+<li>Created <code>lib/agent/tier-gate.ts</code> — a pure function <code>tierGate({ skillRunId, toolName, input }) → { kind, tier, ... }</code>.</li>
+<li>Wired the gate into <code>agent-loop.ts</code> — every tool call now goes through it.</li>
+<li>Unknown tools default to RED (<strong>fail closed</strong>).</li>
+<li>Every gate decision writes a <code>tool_gated</code> event to the events store.</li>
+<li>RED-tier calls create an approval record and tell the AI &quot;blocked, work around it or finish.&quot;</li>
+<li>Wrote a unit test covering all 3 branches + the events written.</li>
+<li>Exposed <code>GET /api/events</code> so we can verify the gate is firing.</li>
+</ul>
+<p><strong>Interview soundbite:</strong> <em>&quot;I implemented a three-tier autonomy model — green auto-executes, yellow auto-executes + notifies, red gets parked as an approval. The gate is a single function called before every tool dispatch and writes one event per decision. Unknown tools fail closed.&quot;</em></p>
+<h3 id="step-3-first-real-connector-seo-audit">Step 3 — First real connector + SEO audit</h3>
+<p><strong>Goal:</strong> Build the first connector and let the agent do <strong>real structured work on a real URL</strong>.</p>
+<p><strong>Why:</strong> Before this step, the agent only had <code>web_search</code> (vague DuckDuckGo) and <code>read_url</code> (raw HTML strip). Neither produced structured findings. This step changes that.</p>
+<p><strong>What we did:</strong></p>
+<ul>
+<li>Installed <code>cheerio</code> — a lightweight HTML parser.</li>
+<li>Created <code>lib/connectors/types.ts</code> — the <code>SiteConnector</code> interface every site connector must satisfy. Connectors declare <strong>capabilities</strong> (<code>canCrawl</code>, <code>canWriteMeta</code>, etc.).</li>
+<li>Created <code>lib/connectors/site/cheerio.ts</code> — fetches a URL, parses with cheerio, returns a typed <code>CrawledPage</code> (title, meta, headings, alt-text gaps, link counts, schema, canonical, language, viewport).</li>
+<li>Created <code>lib/tools/seo/audit-checks.ts</code> — a <strong>pure function</strong> <code>runAuditChecks(page)</code> that runs ~10 SEO checks and returns findings tagged by severity. Also a <code>scoreFromFindings</code> that produces a 0–100 health score.</li>
+<li>Added two new tools (<code>crawl_site</code>, <code>audit_seo</code>) to <code>agent-tools.ts</code>, both GREEN tier.</li>
+<li><code>audit_seo</code> saves a real audit record to the <code>audits</code> store.</li>
+<li>Exposed <code>GET /api/audits</code> and <code>GET /api/audits/:id</code>.</li>
+<li>Wrote a unit test that runs against <code>https://example.com</code> and asserts the full chain works.</li>
+<li>End-to-end live test: started a run, agent called <code>audit_seo</code>, audit landed in the store with score 65, 6 findings.</li>
+</ul>
+<p><strong>Interview soundbite:</strong> <em>&quot;I built the first real connector — a cheerio-based site crawler that returns structured SEO data — and wired it through two new tools, <code>crawl_site</code> and <code>audit_seo</code>. The audit checks are a pure function over the crawled page, so they're easy to unit-test. Findings get persisted to the audits store and exposed via a read-only endpoint.&quot;</em></p>
+<h3 id="steps-still-to-do">Steps still to do</h3>
+<ul>
+<li><strong>Step 4</strong> — Approvals inbox UI (the first <strong>visible</strong> payoff of the tier gate).</li>
+<li><strong>Step 5</strong> — First YELLOW write tool: <code>add_alt_text</code> via a GitHub-MDX connector (PR-based rollback built in).</li>
+<li><strong>Step 6</strong> — Scheduler (node-cron) + memory wiring (agent reads product profile before every run).</li>
+<li><strong>Step 7</strong> — Wider tool coverage (ads, email, content) + missing UI screens (Audits, Chat).</li>
+</ul>
+<hr />
+<h2 id="glossary-of-every-term">13. Glossary of every term</h2>
+<p><strong>Agent</strong> — An LLM + a list of tools + a loop. Picks the next tool to call, repeats until done.</p>
+<p><strong>Agent loop</strong> — The repeating cycle: LLM picks a tool → we run it → we send the result back to the LLM → repeat. Lives in <code>agent-loop.ts</code>.</p>
+<p><strong>Approval</strong> — A record that says &quot;the agent wanted to do this RED-tier thing — please decide.&quot; Created by the tier gate, decided by the user.</p>
+<p><strong>Audit</strong> — A saved SEO/CRO/ads report. Has scope (what was looked at), findings (issues found), and a score. Lives in the <code>audits</code> store.</p>
+<p><strong>Budget guard</strong> — A hard cap that overrides tiers. E.g. &quot;no more than $50/day in ad spend.&quot; Even an approved action can't exceed it.</p>
+<p><strong>Capability</strong> — A flag on a connector declaring what it can do (<code>canCrawl</code>, <code>canWriteMeta</code>, etc.). Tools check capabilities before writing.</p>
+<p><strong>Cheerio</strong> — A library that parses HTML in Node.js (no browser needed) and lets you query it with jQuery-style selectors.</p>
+<p><strong>Connector</strong> — A typed adapter that talks to ONE external service. Hides the messy details of HTTP, auth, OAuth.</p>
+<p><strong>Cron</strong> — A way to run jobs on a schedule. <code>node-cron</code> lets us say &quot;every Monday at 6am, run this function.&quot;</p>
+<p><strong>CRUD</strong> — Create, Read, Update, Delete. The four basic operations on data. Our stores expose CRUD methods.</p>
+<p><strong>Endpoint</strong> — A URL on the backend that does something. <code>POST /api/agent/start</code> is an endpoint.</p>
+<p><strong>Event log</strong> — An append-only list of every meaningful thing that happened. Tier gate decisions, tool calls, approvals — all logged.</p>
+<p><strong>Express</strong> — The thin web framework on the backend. Handles HTTP requests.</p>
+<p><strong>Failing closed</strong> — Default to &quot;no&quot; when uncertain. Unknown tool → RED. Unknown user → reject. The safe direction.</p>
+<p><strong>Framework spec</strong> — The big architecture doc (<code>marketing-agent-framework.md</code>). The target we're building toward.</p>
+<p><strong>Gemini</strong> — Google's family of AI models. We use Gemini 2.5 Flash.</p>
+<p><strong>JSON-LD</strong> — JavaScript Object Notation for Linked Data. Structured data Google reads to understand your page. SEO loves it.</p>
+<p><strong>LLM</strong> — Large Language Model. Gemini, Claude, GPT — all LLMs.</p>
+<p><strong>Map</strong> (JavaScript) — Built-in key/value store. Like a Python dict.</p>
+<p><strong>Next.js</strong> — The React framework powering the frontend.</p>
+<p><strong>ReAct</strong> — Reason + Act. The pattern of &quot;AI reasons about next step, takes an action, looks at result, reasons again.&quot; Our loop is ReAct.</p>
+<p><strong>Repository pattern</strong> — A design pattern where data access goes through a single interface (the &quot;repository&quot;) that hides the underlying database. Our stores follow this.</p>
+<p><strong>Rollback</strong> — The ability to undo a write. Every YELLOW tool must implement it. RED tools that can't be rolled back stay RED forever.</p>
+<p><strong>Schema markup</strong> — JSON-LD blocks on a webpage that tell Google &quot;this is a product, this is a blog post, this is a review.&quot; Boosts SEO.</p>
+<p><strong>Separation of concerns</strong> — A design principle: each module does one job. Skills know things, tools do things, connectors talk to services.</p>
+<p><strong>Skill</strong> — A markdown file that describes one marketing discipline (SEO Audit, Copywriting). The AI reads it as a recipe.</p>
+<p><strong>Skill run</strong> — One execution of one skill on one campaign brief. Has a status, steps, drafts, final report.</p>
+<p><strong>Store</strong> — Our word for &quot;database table.&quot; Currently in-memory <code>Map</code>s; will become SQLite/Postgres tables later.</p>
+<p><strong>Tailwind</strong> — A CSS framework where you compose styles from utility classes in your HTML.</p>
+<p><strong>Tier</strong> — GREEN, YELLOW, or RED — the autonomy level of a tool. Determines whether it runs automatically.</p>
+<p><strong>Tier gate</strong> — The function that checks every tool call against its tier and decides what to do.</p>
+<p><strong>Tool</strong> — A function the agent can call. Each tool has a name, typed input, tier, and implementation.</p>
+<p><strong>Tool calling</strong> (also &quot;function calling&quot;) — The LLM feature where instead of replying in text, the model says &quot;call function X with these arguments.&quot; Gemini, Claude, and GPT all support this.</p>
+<p><strong>TypeScript</strong> — JavaScript with type annotations. Catches bugs at compile time.</p>
+<p><strong>Verify</strong> — Re-fetching state after a write to confirm the change landed. Required for every YELLOW/RED tool by the framework.</p>
+<p><strong>Workspace</strong> — A single tenant. Today we have one default. Multi-tenant comes later.</p>
+<p><strong>Zod</strong> — A TypeScript library for validating data shapes. We'll use it for tool input validation in Step 4+.</p>
+<hr />
+<h2 id="interview-questions-good-answers">14. Interview questions + good answers</h2>
+<p><strong>Q: Walk me through the architecture.</strong></p>
+<p>A: Three layers. The frontend (Next.js + React + Tailwind) shows the user dashboard, campaign briefs, and run results. The backend (Node + Express + TypeScript) runs an agent loop: it loads memory about the workspace, sends a prompt with available tools to Google Gemini, gets back a tool call, runs that tool through a tier gate, sends the result back, and repeats until the agent calls <code>finish</code>. Behind the agent are three boxes: stores (data, currently in-memory), tools (verbs the agent can call), and connectors (typed adapters to outside services like the cheerio-based site crawler).</p>
+<p><strong>Q: What is an AI agent?</strong></p>
+<p>A: An LLM plus a list of tools plus a loop. The LLM reasons about the next step, picks a tool, the tool runs, the result comes back, the LLM reasons again. Stops when the LLM declares done or we hit a safety cap. Our agent uses Gemini 2.5 Flash with function calling.</p>
+<p><strong>Q: Why split the storage into 9 separate stores?</strong></p>
+<p>A: Single responsibility. Each store maps to one future database table. Each has a stable interface (<code>create</code>, <code>get</code>, <code>list</code>) so swapping the implementation — Map today, SQLite tomorrow, Postgres later — doesn't ripple through the rest of the code. This is the repository pattern.</p>
+<p><strong>Q: What is the tier system and why does it exist?</strong></p>
+<p>A: Three lanes — GREEN auto-executes (reads), YELLOW auto-executes with a notify log (reversible writes), RED creates an approval and waits for a human. Every tool declares its tier. The gate is a single function called before every dispatch. Unknown tools default to RED — fail closed. This means the agent can do real work autonomously without a human having to baby-sit every read, but anything risky still gets gated.</p>
+<p><strong>Q: How does the agent know which tools to call?</strong></p>
+<p>A: We send Gemini a list of tool declarations — name, description, JSON schema for the input. Gemini's response either contains a <code>functionCall</code> part (it wants to use a tool) or just text. If it's a function call, we run the matching dispatch case in our backend.</p>
+<p><strong>Q: How do you prevent the agent from running a tool that doesn't exist?</strong></p>
+<p>A: The tier gate fails closed. If a tool name isn't in our <code>toolMeta</code> registry, the gate treats it as RED and creates an approval instead of running. We also dispatch via an exhaustive switch — unknown tool names return <code>&quot;Unknown tool: X&quot;</code>.</p>
+<p><strong>Q: What is a connector?</strong></p>
+<p>A: A typed adapter that wraps one external service. Our <code>cheerioSiteConnector</code> knows how to fetch a URL and return a structured <code>CrawledPage</code>. Connectors declare capabilities — e.g. cheerio has <code>canCrawl: true, canWriteMeta: false</code>. Tools check those capabilities before attempting writes. Future connectors (WordPress, GitHub-MDX, GA4) implement the same interface, so tools written today work against any of them.</p>
+<p><strong>Q: What is the event log?</strong></p>
+<p>A: An append-only list of every meaningful event — tool calls, gate decisions, approvals, rollbacks, LLM calls. Used for the activity feed and for debugging. The tier gate writes one event per decision. Routes never <code>console.log</code> business data — they emit events.</p>
+<p><strong>Q: Why use Gemini instead of OpenAI or Claude?</strong></p>
+<p>A: Engineering tradeoff. Generous free tier for development, reliable function calling, fast inference with 2.5 Flash. The code is structured so swapping the LLM is a single-file change inside <code>agent/</code>. The framework spec actually calls for Claude — we picked Gemini and documented the deviation.</p>
+<p><strong>Q: Why in-memory storage?</strong></p>
+<p>A: Solo project, pre-launch. Real databases (Postgres, SQLite) add operational complexity we don't need yet. Each store has a stable interface, so swapping <code>Map</code> for <code>better-sqlite3</code> later is a one-file change per store. Premature optimization is a real cost.</p>
+<p><strong>Q: How do you test the SEO audit logic?</strong></p>
+<p>A: Two layers. First, <code>audit-checks.ts</code> is a pure function — input is a <code>CrawledPage</code> object, output is a list of findings. No I/O. Easy to unit-test with fake inputs. Second, the connector itself is tested against a live URL (<code>example.com</code>) — slower but verifies the real fetch + parse chain. Both tests are runnable with <code>npx tsx</code>.</p>
+<p><strong>Q: What's the difference between a skill and a tool?</strong></p>
+<p>A: A skill is knowledge — a markdown document that tells the AI how to think about a problem (&quot;for SEO audit: check title, then meta, then headings...&quot;). A tool is a verb — a typed function the AI can call (<code>audit_seo(url)</code>). Skills never make HTTP calls; only tools do.</p>
+<p><strong>Q: How would you scale this to 100 customers?</strong></p>
+<p>A: Three changes. (1) Replace in-memory stores with Postgres — same interfaces, real persistence. (2) Add a scheduler like Inngest so weekly cron jobs run reliably even if the server restarts. (3) Add auth (Clerk or Supabase Auth) so each workspace's data is isolated. The agent loop and tool system don't change.</p>
+<p><strong>Q: What's the hardest design decision you faced?</strong></p>
+<p>A: Where to draw the line between automation and approval. Going too automatic — agent ships a typo to your homepage. Going too gated — every tiny read needs a click, defeats the point. The three-tier system was the answer: pure reads run silently, reversible writes auto-run but log loudly, irreversible writes wait. Plus budget guards as hard caps for money/blast-radius.</p>
+<p><strong>Q: What would you build next if you had a week?</strong></p>
+<p>A: The approvals inbox UI (Step 4). The tier gate already creates approval records for RED calls — they're sitting in the store with no screen to show them. Building that screen is the first time a human user would actually <em>see</em> the autonomy system in action. After that, the first YELLOW write tool — <code>add_alt_text</code> via a GitHub-MDX connector, where rollback is &quot;revert the commit.&quot;</p>
+<hr />
+<h2 id="whats-not-built-yet-be-honest">15. What's NOT built yet (be honest)</h2>
+<p>If you're asked &quot;what's missing,&quot; here's the truth:</p>
+<ul>
+<li><strong>No real database.</strong> Restart the backend and everything resets. Audits, runs, approvals — all gone. Intentional for dev.</li>
+<li><strong>No auth.</strong> Single user, single workspace.</li>
+<li><strong>No real OAuth.</strong> The &quot;Ecosystem&quot; card on Product Profile shows fake &quot;Connect&quot; buttons. Nothing actually connects.</li>
+<li><strong>No scheduler.</strong> &quot;Run an SEO audit every Monday&quot; doesn't work yet.</li>
+<li><strong>Frontend isn't wired to the backend for most screens.</strong> Dashboard / Campaigns / Product Profile show mock data. Only the <strong>Launch Agents</strong> flow actually hits the backend.</li>
+<li><strong>Approvals inbox screen doesn't exist.</strong> RED approvals are in the store but no UI to decide them.</li>
+<li><strong>The frontend's &quot;Live trace&quot; on the Campaigns screen is mock data, not the real <code>steps</code> array.</strong></li>
+<li><strong>No write tools yet.</strong> The agent can read the web and save drafts, but it can't actually publish a blog post, send an email, or pause an ad.</li>
+<li><strong>No rollback or verify implementations.</strong> When write tools land, those will too.</li>
+<li><strong>The 41 skill files in <code>.agents/skills/</code></strong> are loaded but the agent currently gets a generic prompt — no per-skill tool filtering yet.</li>
+</ul>
+<p>These are all known and slotted into the build plan (Steps 4–7).</p>
+<hr />
+<h2 id="how-to-run-test-demo">16. How to run, test, demo</h2>
+<h3 id="run-the-frontend">Run the frontend</h3>
+<pre><code class="language-powershell">cd c:\Users\devan\OneDrive\Desktop\marketing-agent-platform\frontend
+npm run dev
+</code></pre>
+<p>Opens at <code>http://localhost:3000</code>. Click between Dashboard, Campaigns, and Product Profile in the sidebar.</p>
+<h3 id="run-the-backend">Run the backend</h3>
+<pre><code class="language-powershell">cd c:\Users\devan\OneDrive\Desktop\marketing-agent-platform\backend
+npm run dev
+</code></pre>
+<p>Listens on <code>http://localhost:4000</code>. Sanity check: <code>curl http://localhost:4000/health</code>.</p>
+<h3 id="run-unit-tests-no-gemini-no-server">Run unit tests (no Gemini, no server)</h3>
+<pre><code class="language-powershell">cd c:\Users\devan\OneDrive\Desktop\marketing-agent-platform\backend
+
+# Step 2 — tier gate
+npx tsx src/lib/agent/__tests__/tier-gate.test.ts
+
+# Step 3 — cheerio crawl + audit against example.com
+npx tsx src/lib/tools/seo/__tests__/audit-seo.test.ts
+</code></pre>
+<p>Both should print a list of <code>ok:</code> lines and end with &quot;All tests passed.&quot;</p>
+<h3 id="run-a-real-agent-end-to-end-needs-gemini_api_key-in-backend.env">Run a real agent end-to-end (needs <code>GEMINI_API_KEY</code> in <code>backend/.env</code>)</h3>
+<p>PowerShell:</p>
+<pre><code class="language-powershell"># Start the backend first (npm run dev), then in another shell:
+$resp = Invoke-RestMethod -Method Post -Uri &quot;http://localhost:4000/api/agent/start&quot; `
+  -ContentType &quot;application/json&quot; `
+  -Body (@{
+    skillId = &quot;seo-audit&quot;
+    productName = &quot;Demo&quot;
+    targetAudience = &quot;anyone&quot;
+    campaignGoal = &quot;Audit https://example.com using audit_seo.&quot;
+    brandTone = &quot;Professional&quot;
+    mainChannel = &quot;Website SEO&quot;
+    campaignBudget = &quot;Low&quot;
+    launchTimeline = &quot;now&quot;
+  } | ConvertTo-Json)
+$resp
+Start-Sleep -Seconds 30
+
+# Inspect what happened:
+Invoke-RestMethod &quot;http://localhost:4000/api/events&quot; | ConvertTo-Json -Depth 5
+Invoke-RestMethod &quot;http://localhost:4000/api/audits&quot; | ConvertTo-Json -Depth 8
+Invoke-RestMethod &quot;http://localhost:4000/api/agent/$($resp.taskId)&quot; | ConvertTo-Json -Depth 8
+</code></pre>
+<h3 id="type-check-anytime">Type-check anytime</h3>
+<pre><code class="language-powershell">cd backend; npx tsc --noEmit
+cd ../frontend; npx tsc --noEmit
+</code></pre>
+<p>Should exit 0 with no output.</p>
+<hr />
+<h2 id="end-of-notes">End of notes</h2>
+<p>If anything here is unclear, write down the term, then re-read its section. Then look at the file the section links to. Reading the actual code is the final step — by the end of these notes you should already know what's in each file before you open it.</p>
+<p>Last updated after Step 3 — first connector + SEO audit live.</p>
+</body></html>

@@ -1,0 +1,11 @@
+node_modules/
+.env
+.env.local
+dist/
+build/
+*.log
+*.sqlite
+*.sqlite-*
+data/backups/
+.demo-saas-website.git/
+.DS_Store

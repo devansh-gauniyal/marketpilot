@@ -1,0 +1,632 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><title>MarketPilot AI - Study Notes Part 2</title><style>@page { size: A4; margin: 18mm 16mm; }
+* { box-sizing: border-box; }
+body {
+  font-family: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: 11.5pt;
+  line-height: 1.55;
+  color: #1f2937;
+  max-width: 780px;
+  margin: 0 auto;
+  padding: 24px;
+  background: #fff;
+}
+h1, h2, h3, h4 { color: #0f172a; line-height: 1.25; margin-top: 1.6em; margin-bottom: 0.4em; }
+h1 { font-size: 22pt; border-bottom: 2px solid #e5e7eb; padding-bottom: 0.3em; page-break-before: always; }
+h1:first-of-type { page-break-before: avoid; }
+h2 { font-size: 16pt; border-bottom: 1px solid #e5e7eb; padding-bottom: 0.2em; }
+h3 { font-size: 13pt; }
+h4 { font-size: 11.5pt; }
+p { margin: 0.6em 0; }
+a { color: #4f46e5; text-decoration: none; }
+ul, ol { padding-left: 1.4em; margin: 0.6em 0; }
+li { margin: 0.25em 0; }
+code {
+  font-family: "JetBrains Mono", "Consolas", "Menlo", monospace;
+  font-size: 0.92em;
+  background: #f1f5f9;
+  padding: 0.1em 0.35em;
+  border-radius: 4px;
+  color: #be185d;
+}
+pre {
+  background: #0f172a;
+  color: #e2e8f0;
+  padding: 12px 14px;
+  border-radius: 8px;
+  overflow-x: auto;
+  font-size: 9.5pt;
+  line-height: 1.45;
+  page-break-inside: avoid;
+}
+pre code { background: transparent; color: inherit; padding: 0; }
+blockquote {
+  border-left: 4px solid #6366f1;
+  background: #eef2ff;
+  margin: 0.8em 0;
+  padding: 0.6em 1em;
+  color: #312e81;
+  border-radius: 0 6px 6px 0;
+}
+table {
+  border-collapse: collapse;
+  width: 100%;
+  margin: 0.8em 0;
+  font-size: 10.5pt;
+  page-break-inside: avoid;
+}
+th, td {
+  border: 1px solid #e5e7eb;
+  padding: 6px 10px;
+  text-align: left;
+  vertical-align: top;
+}
+th { background: #f1f5f9; font-weight: 600; }
+tr:nth-child(even) td { background: #fafafa; }
+hr { border: 0; border-top: 1px solid #e5e7eb; margin: 1.5em 0; }
+strong { color: #0f172a; }
+.cover {
+  text-align: center;
+  padding: 60px 0 80px;
+  border-bottom: 1px solid #e5e7eb;
+  margin-bottom: 24px;
+}
+.cover h1 {
+  font-size: 30pt; border: 0; padding: 0; margin: 0 0 10px;
+  page-break-before: avoid;
+}
+.cover .sub { color: #64748b; font-size: 12pt; }
+@media print {
+  body { padding: 0; }
+  a { color: #1f2937; }
+}</style></head><body><div class="cover">
+  <h1>MarketPilot AI — Study Notes (Part 2)</h1>
+  <div class="sub">Steps 4-7 · Side concepts · Interview prep<br/>Devansh · 2026</div>
+</div><h1 id="marketpilot-ai-study-notes-part-2">MarketPilot AI — Study Notes (Part 2)</h1>
+<p>The continuation of <a href="NOTES.md">NOTES.md</a>. Part 1 covered the framework, the first 3 steps, the glossary, and the core interview answers. <strong>Read Part 1 first.</strong> Part 2 picks up at Step 4 and ends at the fully-shipped product.</p>
+<p>Same structure as Part 1: read top to bottom once, then use as a reference.</p>
+<hr />
+<h2 id="table-of-contents">Table of contents</h2>
+<ol>
+<li><a href="#1-where-we-left-off">Where we left off</a></li>
+<li><a href="#2-step-4--approvals-inbox--campaign-brief-modal">Step 4 — Approvals inbox + campaign brief modal</a></li>
+<li><a href="#3-step-5--first-yellow-write-tool--the-rollback-contract">Step 5 — First YELLOW write tool + the rollback contract</a></li>
+<li><a href="#4-step-6--memory--scheduler">Step 6 — Memory + Scheduler</a></li>
+<li><a href="#5-step-7--finishing-the-visible-product">Step 7 — Finishing the visible product</a></li>
+<li><a href="#6-side-concepts-youll-be-asked-about">Side concepts you'll be asked about</a></li>
+<li><a href="#7-every-screen-one-paragraph-each">Every screen, one paragraph each</a></li>
+<li><a href="#8-the-full-endpoint-list-updated">The full endpoint list (updated)</a></li>
+<li><a href="#9-the-full-folder-map-updated">The full folder map (updated)</a></li>
+<li><a href="#10-glossary--new-terms-only">Glossary — new terms only</a></li>
+<li><a href="#11-interview-questions--good-answers-part-2">Interview questions + good answers (Part 2)</a></li>
+<li><a href="#12-final-whats-not-built-list">Final &quot;what's NOT built&quot; list</a></li>
+<li><a href="#13-how-to-demo-every-screen-step-by-step">How to demo every screen (step-by-step)</a></li>
+</ol>
+<hr />
+<h2 id="where-we-left-off">1. Where we left off</h2>
+<p>By the end of Part 1, the agent could:</p>
+<ul>
+<li>Read websites via a real cheerio-based site connector.</li>
+<li>Run structured SEO audits and persist them.</li>
+<li>Route every tool call through the GREEN / YELLOW / RED tier gate.</li>
+<li>Refuse unknown tools by failing closed.</li>
+</ul>
+<p><strong>What was still missing:</strong> any way to actually <em>do</em> things in the world (writes), any way to see persisted audits visually, any way for the user to fill in their product profile, any way to launch a run from the UI, no scheduled jobs, no memory across runs, and most screens were placeholders.</p>
+<p>Steps 4–7 fix all of that.</p>
+<hr />
+<h2 id="step-4-approvals-inbox-campaign-brief-modal">2. Step 4 — Approvals inbox + campaign brief modal</h2>
+<h3 id="why-this-step-existed">Why this step existed</h3>
+<p>A real platform produces 20 proposed actions a week, not 3. Burying them inside whichever skill run produced them doesn't scale — humans want one inbox. So Step 4 introduces a <strong>dedicated Approvals screen</strong> and a <strong>pending-count badge</strong> in the sidebar so you always know how many decisions are queued.</p>
+<p>Step 4 also fixed a related missing piece: there was <strong>no campaign brief form</strong> in the UI. The <code>+ New Run</code> button did nothing. We built a modal that posts to <code>/api/agent/start</code>.</p>
+<h3 id="what-we-built-in-code">What we built (in code)</h3>
+<p><strong>Backend:</strong></p>
+<ul>
+<li><a href="backend/src/routes/approvals.ts">backend/src/routes/approvals.ts</a> — <code>GET /api/approvals?status=...</code>, <code>GET /api/approvals/:id</code>, <code>POST /api/approvals/:id/decide</code>.</li>
+<li><code>GET /api/approvals-count</code> — tiny endpoint that just returns <code>{ pending: N }</code>. Cheap to poll for the sidebar badge.</li>
+<li>In <a href="backend/src/lib/agent-loop.ts">agent-loop.ts</a>, when the agent calls <code>finish()</code>, every proposedAction it returns is <strong>also mirrored as a real <code>Approval</code> record</strong> in the approvals store. The <code>actionId</code> links the two so future code can keep them in sync.</li>
+</ul>
+<p><strong>Frontend:</strong></p>
+<ul>
+<li><code>ApprovalsView</code> — fetches <code>/api/approvals</code>, renders with filter pills (pending / approved / rejected / all), Approve / Reject buttons hit <code>/api/approvals/:id/decide</code>.</li>
+<li><code>NavButton</code> now accepts an optional <code>badge</code> prop and renders a red pill with the count.</li>
+<li><code>usePendingApprovalsCount</code> hook — polls every 5 seconds.</li>
+<li><code>NewRunModal</code> — campaign brief form: skill picker (10 cards), product name, target audience, campaign goal (required), brand tone pills, main channel, budget, launch timeline. Submit posts to <code>/api/agent/start</code>, closes the modal, auto-navigates to the Approvals inbox.</li>
+</ul>
+<h3 id="side-concepts-in-this-step">Side concepts in this step</h3>
+<p><strong>Polling.</strong> The frontend doesn't have a WebSocket or Server-Sent Events connection to the backend. Every few seconds it just re-fetches the endpoint. That's called &quot;polling.&quot; It's not as fast as a live socket, but it's <strong>trivial</strong> to implement and works behind any firewall / proxy. For an inbox with &lt; 50 items polling every 5 seconds is invisible to the user.</p>
+<p><strong>Why a dedicated count endpoint?</strong> We could ask &quot;how many pending approvals?&quot; by fetching the full list and counting. But that ships every approval's body across the network 12 times a minute. <code>/api/approvals-count</code> returns one number — tiny payload. Cheap to poll often.</p>
+<p><strong>The <code>void</code> operator.</strong> You'll see <code>void load()</code> in our <code>useEffect</code> blocks. <code>load()</code> returns a <code>Promise</code>. Without <code>void</code>, ESLint complains that we're creating a promise and ignoring it (&quot;floating promise&quot;). <code>void</code> is the explicit &quot;I know, I don't want to wait for this.&quot; It does nothing at runtime — it's a marker for the reader and the linter.</p>
+<p><strong>Modal pattern.</strong> A modal is a UI overlay that grabs focus and dims the page behind it. Three details every modal needs to handle:</p>
+<ul>
+<li><strong>Backdrop click</strong> → close (we use <code>onClick</code> on the outer div + <code>e.stopPropagation()</code> on the inner).</li>
+<li><strong>ESC key</strong> → close (we add a <code>keydown</code> listener in <code>useEffect</code>, remove it on unmount).</li>
+<li><strong>Submit disabled until valid</strong> — we compute <code>canSubmit</code> from the required fields and disable the button.</li>
+</ul>
+<p><strong>The <code>actionId</code> link between two stores.</strong> The agent's <code>finalReport.proposedActions</code> and the new <code>approvalsStore</code> both hold roughly the same data. Why both? Because each store has a different audience: the run's final report is shown inside the run, and the approvals store powers the global inbox. Linking them by a shared <code>actionId</code> lets future code keep them in sync without duplicating logic today.</p>
+<h3 id="what-youd-say-in-an-interview">What you'd say in an interview</h3>
+<blockquote>
+<p>&quot;Step 4 turned proposed actions from a side-effect of one run into a first-class queue. Every action the agent suggests now lands in the approvals store as its own record. The inbox is just a list view over that store with decide buttons. The sidebar badge polls a cheap count endpoint every 5 seconds — fail-graceful if the backend is down, the last value stays on screen.&quot;</p>
+</blockquote>
+<hr />
+<h2 id="step-5-first-yellow-write-tool-the-rollback-contract">3. Step 5 — First YELLOW write tool + the rollback contract</h2>
+<h3 id="why-this-step-existed-1">Why this step existed</h3>
+<p>Until Step 5 the agent could only <em>propose</em> things. Step 5 was about <strong>making the agent actually do something</strong> — and doing it in a way where rollback was trivially possible.</p>
+<p>The framework rule: every write tool must return a <code>rollbackPayload</code> and implement a <code>rollback()</code> function. Tools that can't be rolled back are forced to RED tier forever (no auto-execute). So we needed a write tool where rollback was easy. The answer: <strong>anything that goes through Git.</strong></p>
+<p>A <strong>Pull Request</strong> is the perfect first write:</p>
+<ul>
+<li>The change isn't applied until you merge the PR.</li>
+<li>Closing the PR = canceling the change. That's rollback for free.</li>
+<li>The audit trail (who, what, when) is in Git already.</li>
+</ul>
+<p>So we built <code>add_alt_text</code> — when the agent sees an &quot;images missing alt-text&quot; finding, it can open a PR to fix them.</p>
+<h3 id="what-we-built">What we built</h3>
+<p><strong>Backend:</strong></p>
+<ul>
+<li><a href="backend/src/lib/connectors/types.ts">backend/src/lib/connectors/types.ts</a> — added <code>canFixAltText</code> capability + <code>AltTextPatch</code> type + <code>fixAltText</code> + <code>rollback</code> methods on the <code>SiteConnector</code> interface.</li>
+<li><a href="backend/src/lib/connectors/github/mdx.ts">backend/src/lib/connectors/github/mdx.ts</a> — the GitHub-MDX connector. Initially <strong>simulation only</strong> (logged the PR contents, returned fake URL). In Step 7 we wired real Octokit calls when <code>GITHUB_TOKEN</code> is set.</li>
+<li><a href="backend/src/lib/tools/seo/add-alt-text.ts">backend/src/lib/tools/seo/add-alt-text.ts</a> — the tool body. Checks <code>capabilities.canFixAltText</code> before calling, returns <code>{ result, changeId, rollbackPayload }</code>.</li>
+<li><a href="backend/src/lib/agent-tools.ts">agent-tools.ts</a> — registered <code>add_alt_text</code> (declaration, <code>toolMeta: YELLOW</code>, dispatch case). New exported <code>rollbackToolCall(toolName, payload)</code> function.</li>
+<li><a href="backend/src/lib/agent-loop.ts">agent-loop.ts</a> — when a YELLOW tool returns a rollback payload, a <code>ToolCall</code> record is created in <code>tool-calls</code> store with status <code>executed</code>.</li>
+<li><a href="backend/src/routes/tool-calls.ts">backend/src/routes/tool-calls.ts</a> — <code>GET /api/tool-calls</code>, <code>POST /api/tool-calls/:id/rollback</code>.</li>
+</ul>
+<h3 id="side-concepts-in-this-step-1">Side concepts in this step</h3>
+<p><strong>Pull Request (PR).</strong> A Pull Request is Git's way of saying &quot;I made these changes on a branch — please review and merge.&quot; The change isn't live on <code>main</code> until someone merges. So the PR itself is a <strong>proposed change</strong>. Closing it (without merging) is the same as deleting it. That's why PR-based writes have free rollback.</p>
+<p><strong>Branch / commit / SHA.</strong> Git tracks code in a tree of commits. A &quot;branch&quot; is just a movable pointer at some commit. A &quot;SHA&quot; is a unique fingerprint of a commit. When Octokit's <code>getRef</code> returns a <code>sha</code>, that's the unique ID of the commit at the tip of that branch.</p>
+<p><strong>Base64 encoding.</strong> When you upload file content through GitHub's API, you have to send it as base64 — a way to encode binary data as plain ASCII. That's what <code>Buffer.from(text).toString(&quot;base64&quot;)</code> does. GitHub stores the file as binary, then decodes when displaying. We use base64 because the API expects it; otherwise the JSON would break on special characters.</p>
+<p><strong>Personal Access Token (PAT).</strong> GitHub's quick way to authenticate without OAuth. You generate a token in GitHub Settings, give it to the app via env var, and it acts on your behalf. Less secure than OAuth (a leaked token has full scope) but <strong>dead simple</strong> for a single-user prototype. Real multi-user products move to OAuth. We deferred OAuth and used a PAT for now.</p>
+<p><strong>Simulation-first / real-second.</strong> We didn't write Octokit on day one. Instead, we built the connector with the <strong>same interface</strong> the real one will have, but the body just <code>console.log</code>'d the simulated PR. That let us prove the entire flow (gate → tool → store → rollback endpoint) without spending OAuth time. When Step 7 added real Octokit, <strong>only the connector body changed</strong> — everything else stayed identical. That's the value of stable interfaces.</p>
+<p><strong>Rollback payload contract.</strong> What goes in a rollback payload? Just enough info to reverse the write. For our PR write that's: <code>{ owner, repo, prNumber, branch, patches, simulated }</code>. The <code>simulated</code> flag lets the rollback code pick between calling <code>octokit.pulls.update({ state: &quot;closed&quot; })</code> (real) and just logging (simulated).</p>
+<p><strong>The <code>try/catch</code> + fallback pattern.</strong> In the connector, the real Octokit path is wrapped in <code>try/catch</code>. If anything throws — network error, expired token, repo doesn't exist — we log it and <strong>fall through to the simulation</strong>. The agent loop never crashes. This is called &quot;graceful degradation&quot;: worse-quality behavior beats crashing.</p>
+<h3 id="what-youd-say-in-an-interview-1">What you'd say in an interview</h3>
+<blockquote>
+<p>&quot;Step 5 introduced the first real write — <code>add_alt_text</code>. It's YELLOW tier because rollback is built in: closing the Pull Request undoes the change. The connector has two paths — real Octokit calls when <code>GITHUB_TOKEN</code> is set, simulation otherwise. Same interface, same rollback payload shape, so the tool body never has to know which is which. Every YELLOW execution writes a <code>ToolCall</code> record with the rollback payload, and there's a <code>POST /api/tool-calls/:id/rollback</code> endpoint that re-invokes the connector's <code>rollback()</code>.&quot;</p>
+</blockquote>
+<hr />
+<h2 id="step-6-memory-scheduler">4. Step 6 — Memory + Scheduler</h2>
+<h3 id="why-this-step-existed-2">Why this step existed</h3>
+<p>Up to Step 5, every agent run started cold. It had no idea what the product was, what audits had already run, or how traffic was trending. So the agent kept asking the user questions the user had already answered (industry, voice, KPIs) or kept re-auditing pages that were audited yesterday.</p>
+<p>The fix: <strong>load memory before every run</strong>. Read the workspace's product profile, recent audits, recent performance — and prepend it to the agent's prompt.</p>
+<p>The other thing missing: <strong>scheduled jobs</strong>. The framework promised &quot;weekly SEO audit every Monday 6am.&quot; That needed <code>node-cron</code>.</p>
+<h3 id="what-we-built-1">What we built</h3>
+<p><strong>Backend:</strong></p>
+<ul>
+<li><a href="backend/src/lib/store/product-profile.ts">backend/src/lib/store/product-profile.ts</a> — seeds a sensible default profile at module load. Now the agent always has <em>something</em> to read.</li>
+<li>Added fields to <code>ProductProfile</code>: <code>productName</code>, <code>tagline</code>, <code>industry</code>, <code>stage</code>, <code>siteUrl</code>, <code>features</code>, <code>differentiators</code>, <code>voiceTone</code> (string→array), <code>mrr</code>, <code>monthlyTraffic</code>, <code>northStar</code>.</li>
+<li><a href="backend/src/routes/profile.ts">backend/src/routes/profile.ts</a> — <code>GET /api/profile</code>, <code>PUT /api/profile</code>.</li>
+<li><a href="backend/src/lib/memory/load.ts">backend/src/lib/memory/load.ts</a> — <code>loadMemory()</code> bundles profile + recent audits + performance. <code>renderMemoryForPrompt()</code> turns the bundle into text for the LLM.</li>
+<li><a href="backend/src/lib/agent-loop.ts">agent-loop.ts</a> — calls <code>loadMemory()</code> at the top of every run, writes a <code>memory_loaded</code> event, injects the rendered memory into the initial prompt.</li>
+<li><a href="backend/src/scheduler/index.ts">backend/src/scheduler/index.ts</a> — job registry + <code>registerCronJobs()</code> called from <code>server.ts</code> at boot. Manual trigger via <code>POST /api/scheduler/run/:jobId</code>.</li>
+<li><a href="backend/src/scheduler/weekly-seo-audit.ts">backend/src/scheduler/weekly-seo-audit.ts</a> — reads the profile's <code>siteUrl</code> and kicks off a <code>seo-audit</code> skill run with a sensible auto-generated brief.</li>
+</ul>
+<h3 id="side-concepts-in-this-step-2">Side concepts in this step</h3>
+<p><strong>Cron expression format.</strong> <code>0 6 * * 1</code> means &quot;minute 0, hour 6, any day-of-month, any month, day-of-week 1 (Monday)&quot; — i.e. every Monday at 6:00 AM. Five fields, in this order: <strong>minute · hour · day-of-month · month · day-of-week</strong>. <code>*</code> means &quot;every.&quot; <code>0</code> in a field means &quot;exactly zero.&quot; Beginners often get this wrong because the fifth field's days-of-week starts at 0 (Sunday) or 1 (Monday) depending on the library. <code>node-cron</code> uses 0=Sunday, but <code>1</code> is unambiguously Monday.</p>
+<p><strong>Pure functions.</strong> <code>loadMemory()</code> and <code>renderMemoryForPrompt()</code> have zero side effects — they read inputs, return outputs, never modify anything. Pure functions are dead simple to unit-test: no mocks, no setup, no teardown. Just call with fake input, assert on output. Our test file <code>memory/__tests__/load.test.ts</code> runs in milliseconds with no network.</p>
+<p><strong>Why memory text instead of structured data?</strong> Gemini accepts function-calling schemas (structured tool inputs), but for the <strong>prompt body</strong> the LLM reads plain text. So we have to convert our nice <code>MemoryBundle</code> object into a multi-line string. <code>renderMemoryForPrompt()</code> is just an opinionated string builder. If empty (no audits yet), it cleanly skips that section instead of saying &quot;0 audits&quot; — saves tokens, looks honest.</p>
+<p><strong>Scheduler durability.</strong> <code>node-cron</code> runs <strong>only while the server process is alive</strong>. If your server restarts at 5:59 AM and the cron was 6:00, the job is missed entirely. Production schedulers (Inngest, Trigger.dev, Sidekiq, etc.) persist their schedule to a database and <strong>catch up</strong> when the worker comes back. We picked <code>node-cron</code> because it's literally one npm package and zero infrastructure. We documented the limitation in <a href="AGENTS.md">AGENTS.md §4</a> so it's not a hidden gotcha.</p>
+<p><strong>Manual-trigger endpoint as a dev affordance.</strong> Waiting until Monday 6am to test a cron is insane. <code>POST /api/scheduler/run/:jobId</code> just calls the same handler the cron would call. Same code, no wait. In production this endpoint would be admin-only; today it's open because we're single-user.</p>
+<p><strong>Why the user can edit the profile but the agent can't.</strong> Framework rule §5.12: <strong>the agent never modifies the product profile.</strong> This is a safety boundary — we don't want the agent rewriting &quot;what your company is&quot; based on something it read on Twitter. The profile is <strong>user intent</strong>. The agent reads it as constraints. The <code>PUT /api/profile</code> endpoint is called only by the frontend form, never by a tool.</p>
+<h3 id="what-youd-say-in-an-interview-2">What you'd say in an interview</h3>
+<blockquote>
+<p>&quot;Step 6 plugged two holes — no memory and no schedule. Memory is a pure function that bundles the profile, recent audits, and recent performance into a text block prepended to every prompt. The scheduler is <code>node-cron</code> registered at boot; there's a manual-trigger endpoint so I don't wait for Monday during demos. Both write events to the event log so the activity feed picks them up.&quot;</p>
+</blockquote>
+<hr />
+<h2 id="step-7-finishing-the-visible-product">5. Step 7 — Finishing the visible product</h2>
+<h3 id="why-this-step-existed-3">Why this step existed</h3>
+<p>After Step 6, the back-end was solid but the front-end still had four placeholder screens (Agents, Drafts, Integrations, Settings), no Chat, and the dashboard was still mock data. Step 7 finished the picture.</p>
+<p>It also did three architectural cleanups: per-skill tool manifests, real OAuth for GitHub, and the proper &quot;rollbackable tool calls&quot; management UI.</p>
+<h3 id="what-we-built-2">What we built</h3>
+<p><strong>Backend:</strong></p>
+<ul>
+<li><a href="backend/src/routes/connections.ts">backend/src/routes/connections.ts</a> — <code>GET / POST / PUT /api/connections</code>.</li>
+<li><a href="backend/src/routes/chat.ts">backend/src/routes/chat.ts</a> — <code>POST /api/chat</code>. Single-turn Gemini call with the memory bundle prepended.</li>
+<li><a href="backend/src/routes/drafts.ts">backend/src/routes/drafts.ts</a> — <code>GET /api/drafts</code> flat gallery feed across all runs.</li>
+<li>New endpoints in <a href="backend/src/server.ts">server.ts</a>: <code>GET /api/skill-runs</code>, <code>GET /api/dashboard-stats</code>, <code>GET /api/audits</code>, <code>GET /api/audits/:id</code>.</li>
+<li><a href="backend/src/lib/skills/manifest.ts">backend/src/lib/skills/manifest.ts</a> — per-skill tool allow-list.</li>
+<li><a href="backend/src/lib/agent-loop.ts">agent-loop.ts</a> — filters <code>toolDeclarations</code> against the skill's allow-list before sending to Gemini.</li>
+<li><a href="backend/src/lib/connectors/github/mdx.ts">backend/src/lib/connectors/github/mdx.ts</a> — <strong>real</strong> Octokit path for PR creation + close. Falls back to simulation if <code>GITHUB_TOKEN</code> is absent or the call throws.</li>
+<li>Seeded 7 default connections so the Connections screen has something to render.</li>
+</ul>
+<p><strong>Frontend</strong> (all in <a href="frontend/app/page.tsx">frontend/app/page.tsx</a>):</p>
+<ul>
+<li>Rewrote <code>DashboardView</code> to read real data from <code>/api/dashboard-stats</code>, <code>/api/skill-runs</code>, <code>/api/events</code>, <code>/api/approvals</code>. Live runs strip shows the agent's current step. Event log feeds the activity panel with color-coded dots. Drafts panel pulls real drafts.</li>
+<li><code>AgentsView</code> — list every skill run with status badge; click a row to expand and see the live trace.</li>
+<li><code>DraftsView</code> — gallery of every draft saved by every run; filter pills; one-click copy to clipboard.</li>
+<li><code>ConnectionsView</code> — 7 integration cards with status dots, config preview, help text.</li>
+<li><code>SettingsView</code> — scheduler controls (Run-now buttons) + rollbackable tool calls list with <strong>Roll back</strong> buttons.</li>
+<li><code>ChatWidget</code> — floating gradient button (bottom-right), opens a chat panel, sends to <code>/api/chat</code>, enter-to-send.</li>
+</ul>
+<h3 id="side-concepts-in-this-step-3">Side concepts in this step</h3>
+<p><strong><code>Promise.all</code>.</strong> When the dashboard hook fetches stats + runs + events + approvals, it fires all four requests <strong>in parallel</strong>, not sequentially. <code>Promise.all([a, b, c, d])</code> returns a single Promise that resolves when <em>all</em> are done. Total latency = the slowest of the four. If you <code>await</code> them one at a time, it's the sum. Big difference when each call is 100ms.</p>
+<p><strong><code>navigator.clipboard.writeText</code>.</strong> Modern browser API for &quot;copy this string to the clipboard.&quot; Used in the Drafts gallery's Copy button. Returns a Promise — we <code>void</code> it because we don't care to confirm.</p>
+<p><strong>Floating widget pattern.</strong> Why is Chat a floating bottom-right button instead of a sidebar item? Because it's a <strong>reactive surface</strong> — you might want to ask the assistant something while you're on the Audits page. A sidebar item would force you to leave whatever you're doing. Linear, Notion, Intercom all do this. The widget renders outside the main layout so it overlays everything.</p>
+<p><strong>Single-turn vs multi-turn vs streaming chat.</strong></p>
+<ul>
+<li><strong>Single-turn</strong> (what we have): each user message is independent. Backend doesn't remember the prior turns. Simple to implement, no chat history persistence needed.</li>
+<li><strong>Multi-turn</strong>: backend stores conversation history and sends it back to the LLM each turn. Better answers, more cost (you re-send the history each call).</li>
+<li><strong>Streaming</strong>: the LLM emits tokens as it generates them; the UI shows the answer growing. Lower perceived latency. Requires Server-Sent Events or chunked HTTP on the server side. We have neither today.</li>
+</ul>
+<p><strong>Per-skill tool manifest.</strong> Every agent run picks one skill. The skill should only see the tools it needs. A copywriting skill shouldn't have access to <code>add_alt_text</code>. So we ship a manifest mapping <code>skillId → string[]</code> of allowed tool names. The agent loop filters <code>toolDeclarations</code> before sending to Gemini. Skills not in the manifest fall back to a sensible default set.</p>
+<p><strong>Why filter, not enforce?</strong> Two layers of defense. The manifest controls what Gemini <em>sees</em> (so it doesn't even know <code>pause_ad_set</code> exists when running <code>copywriting</code>). The tier gate enforces at dispatch time (so even if Gemini hallucinated a tool name, it gets blocked). Defense in depth.</p>
+<p><strong>Status pills + colored dots.</strong> Pattern used everywhere — Connections, Approvals, Tool-calls, Audits. The trick is to define a <code>Record&lt;Status, string&gt;</code> mapping the status to its Tailwind class, then index into it. Avoids ifs and means new statuses just need a new line.</p>
+<p><strong>Polling intervals across the app.</strong> Dashboard polls every 4 seconds. Approvals every 5. Connections every 8. Drafts every 6. Why different? Frequency-of-change. The dashboard changes most (live runs ticking), so 4s. Connections almost never change — 8s is fine. There's no rule; tune to user expectation.</p>
+<p><strong>Real Octokit path with simulation fallback.</strong> When you set <code>GITHUB_TOKEN</code> + <code>GITHUB_OWNER</code> + <code>GITHUB_REPO</code>, the connector uses Octokit to:</p>
+<ol>
+<li><code>repos.get</code> → find the default branch.</li>
+<li><code>git.getRef</code> → get its head SHA.</li>
+<li><code>git.createRef</code> → make a new branch <code>agent/alt-text-&lt;timestamp&gt;</code>.</li>
+<li>For each patch: <code>repos.getContent</code> → read the file → regex-add <code>alt=</code> to the right <code>&lt;img&gt;</code> → <code>repos.createOrUpdateFileContents</code> → commit.</li>
+<li><code>pulls.create</code> → open the PR.</li>
+</ol>
+<p>If anything throws, we log + fall back to simulation. The agent never crashes; the user always gets a PR URL (real or fake).</p>
+<h3 id="what-youd-say-in-an-interview-3">What you'd say in an interview</h3>
+<blockquote>
+<p>&quot;Step 7 finished the surfaces. Every nav item is now a real screen wired to a real endpoint. The dashboard reads dashboard-stats, runs, events, and approvals in parallel via <code>Promise.all</code>. Settings has a Roll back button per tool call that hits the rollback endpoint built in Step 5. Chat is a floating widget — single-turn for now, prepends the memory bundle. And the GitHub connector graduated from simulated to real-with-fallback: if <code>GITHUB_TOKEN</code> is set, it opens actual PRs via Octokit; if not, it simulates. The agent loop also filters tool declarations through a per-skill manifest, so a copywriting skill literally can't see SEO write tools.&quot;</p>
+</blockquote>
+<hr />
+<h2 id="side-concepts-youll-be-asked-about">6. Side concepts you'll be asked about</h2>
+<p>A flat list, every term beginner-explained. Pull these into NOTES1's glossary mentally — both files are one big reference.</p>
+<h3 id="polling">Polling</h3>
+<p>Asking the backend &quot;any updates?&quot; on a fixed interval. Easy to implement, slightly wasteful, perfectly fine for &lt; 100 items. The alternative is WebSockets (true real-time push) or Server-Sent Events. We use polling because the cost of switching is high and the benefit is low at our scale.</p>
+<h3 id="promise.all"><code>Promise.all</code></h3>
+<p>JavaScript's &quot;fire multiple async things in parallel, wait for all to finish.&quot; If one rejects, the whole thing rejects. Used in the dashboard hook so four fetches run simultaneously instead of waiting in line.</p>
+<h3 id="pure-function">Pure function</h3>
+<p>A function whose output depends only on its inputs, with no side effects. <code>runAuditChecks(page) → findings[]</code> is pure. <code>audit_seo(url)</code> is NOT pure because it does I/O. Pure functions are dead simple to test.</p>
+<h3 id="rollback-payload">Rollback payload</h3>
+<p>The opaque blob a write tool stashes so its operation can be reversed later. For <code>add_alt_text</code> it's <code>{ prNumber, branch, patches, simulated }</code>. For <code>pause_ad_set</code> (future) it'd be the previous campaign state. Tools own the contents; the loop and store just carry it through.</p>
+<h3 id="void-operator"><code>void</code> operator</h3>
+<p>TypeScript / JavaScript shorthand for &quot;I know this is a Promise, I don't await it on purpose.&quot; Doesn't do anything at runtime. Used in <code>useEffect</code> to call an async function without ESLint complaining about a floating Promise.</p>
+<h3 id="backdrop-modal">Backdrop / Modal</h3>
+<p>A modal is a popup that takes focus. The backdrop is the dimmed area behind it. Clicking the backdrop closes the modal — convention. <code>e.stopPropagation()</code> on the inner card prevents clicks INSIDE the modal from closing it.</p>
+<h3 id="useeffect-with-cleanup"><code>useEffect</code> with cleanup</h3>
+<p>React hook for side effects (network calls, timers, subscriptions). The function it returns is the <strong>cleanup</strong> — runs when the component unmounts or before the effect re-fires. Pattern in our polling effects: set up <code>setInterval</code>, return <code>() =&gt; clearInterval(t)</code>.</p>
+<h3 id="personal-access-token-pat">Personal Access Token (PAT)</h3>
+<p>GitHub's shortcut for &quot;let this app act as me.&quot; A long string stored in env. Less safe than OAuth (leaking it is bad), but fine for solo-dev mode. Real products graduate to OAuth where users grant scoped access without sharing a token.</p>
+<h3 id="oauth">OAuth</h3>
+<p>The standard way for an app to act on a user's behalf without seeing their password. The user clicks &quot;Connect,&quot; gets redirected to the provider, approves, and the provider hands the app a token. We use OAuth tokens internally; we just haven't built the redirect flows for GA4 / GSC / Meta Ads yet.</p>
+<h3 id="buffer.fromtext.tostringbase64"><code>Buffer.from(text).toString(&quot;base64&quot;)</code></h3>
+<p>Convert a string to base64. GitHub's content API requires it. Base64 is a way to encode arbitrary bytes as ASCII letters — works in JSON, URLs, headers, anywhere.</p>
+<h3 id="graceful-degradation">Graceful degradation</h3>
+<p>If the real path fails (network error, token expired), fall back to a worse-but-working path. Better than crashing. Our GitHub connector does this — falls to simulation if Octokit throws.</p>
+<h3 id="pull-request">Pull Request</h3>
+<p>A Git mechanism for proposing changes. A branch with commits → PR → review → merge or close. Closing without merging = the change is dropped. That's why PR-based writes are perfect for YELLOW: rollback is &quot;close it.&quot;</p>
+<h3 id="tier-gate-recap">Tier gate (recap)</h3>
+<p>A single function called before every tool dispatch. Decides GREEN (run), YELLOW (run + notify), or RED (block, create approval). Failing closed on unknowns is the safety net.</p>
+<h3 id="capability-declaration">Capability declaration</h3>
+<p>Every connector exposes a <code>capabilities: { canCrawl, canWriteMeta, canFixAltText, writesViaPR, ... }</code> object. Tools check it before writing. A WordPress connector might have <code>canWriteMeta: true, canFixAltText: false</code>, and the corresponding tool returns an error rather than throwing.</p>
+<h3 id="fail-closed">Fail closed</h3>
+<p>When uncertain, refuse. Our tier gate sees an unknown tool name → treats it as RED. The alternative (fail open) would silently allow the call, which is a security/safety bug.</p>
+<h3 id="stable-interface">Stable interface</h3>
+<p>A function's input/output shape doesn't change even when the implementation does. <code>siteConnector.crawl(url): Promise&lt;CrawledPage&gt;</code> is stable — we could swap cheerio for Playwright tomorrow and nothing else in the codebase notices.</p>
+<h3 id="repository-pattern">Repository pattern</h3>
+<p>Hide a data store behind a small set of methods (<code>create</code>, <code>get</code>, <code>list</code>, <code>update</code>). Callers don't know if it's a <code>Map</code>, SQLite, or Postgres underneath. All 9 of our stores follow this pattern.</p>
+<h3 id="event-log-event-sourcing-lite">Event log / event sourcing (lite)</h3>
+<p>An append-only list of &quot;something happened&quot; records. We don't fully event-source (we still mutate stores directly), but we <strong>log</strong> every gate decision, tool call, approval, rollback, scheduler tick. That log powers the Activity panel and is the ground truth for debugging.</p>
+<h3 id="manifest">Manifest</h3>
+<p>A small data file declaring &quot;what is allowed for X.&quot; Our skill manifest declares which tools each skill can call. Other parts of the framework spec call for connector manifests (which integrations a skill needs).</p>
+<h3 id="rate-limit-429">Rate limit / 429</h3>
+<p>HTTP 429 = &quot;you're sending too many requests.&quot; Gemini's free tier has daily quotas; if you blow them, you get 429s until reset. We saw this during testing. Production needs <strong>exponential backoff</strong> (wait 1s, then 2s, then 4s, then 8s) and request queuing. We don't have that yet — listed in NOTES §12.</p>
+<h3 id="streaming-response">Streaming response</h3>
+<p>Instead of waiting for the full reply, the server emits chunks as the LLM generates them. Lower perceived latency. Requires Server-Sent Events or chunked HTTP. Our chat doesn't stream yet; it sends one fat response.</p>
+<h3 id="setinterval-and-clearing-it"><code>setInterval</code> and clearing it</h3>
+<p><code>setInterval(fn, ms)</code> calls <code>fn</code> every <code>ms</code> milliseconds, returns an id. <code>clearInterval(id)</code> stops it. Polling = <code>setInterval</code> + cleanup in <code>useEffect</code> return.</p>
+<h3 id="navigator.clipboard.writetext"><code>navigator.clipboard.writeText</code></h3>
+<p>Browser API: &quot;put this string in the clipboard.&quot; Used by the Drafts gallery Copy button. Requires HTTPS or <code>localhost</code> to work.</p>
+<h3 id="dependency-injection-lite">Dependency injection (lite)</h3>
+<p>Passing dependencies in rather than reaching for globals. Our tools receive an <code>AgentContext</code> with workspace id, logger, etc., so the tool doesn't <code>import store</code> directly. Easier to test, swap implementations, run in isolation.</p>
+<h3 id="json-schema">JSON Schema</h3>
+<p>A schema language for describing JSON shapes. Gemini's function calling uses it: every tool declaration says &quot;my input is <code>{ url: string }</code>&quot; in JSON Schema. The LLM matches the shape; we validate before dispatching.</p>
+<h3 id="microtask">Microtask</h3>
+<p>JavaScript runs async callbacks (after <code>await</code>, <code>Promise.then</code>) in &quot;microtasks&quot; between synchronous chunks. Calling <code>setState</code> after an <code>await</code> runs in a microtask, which keeps React happy. Calling <code>setState</code> <em>directly</em> inside a <code>useEffect</code> body is what the linter warned us about — we fixed it with <code>void load()</code>.</p>
+<hr />
+<h2 id="every-screen-one-paragraph-each">7. Every screen, one paragraph each</h2>
+<h3 id="dashboard">Dashboard</h3>
+<p>The home page. Greets you with how many agents are running and how many approvals are pending — both from the backend. Below: a strip of currently-running agent cards (with their current tool call as a status label), four real stat cards with sparklines, the latest 3 pending approvals, the latest 8 events from the log color-coded by type, and the latest 4 drafts the agent has saved. Auto-polls every 4 seconds. If the backend goes down, shows an &quot;Offline · using stale data&quot; pill in the top right but keeps showing the last known data.</p>
+<h3 id="campaigns">Campaigns</h3>
+<p>The mock SEO trace mockup. We left it in because it's pretty, but the <strong>real</strong> version of this screen lives at <strong>Agents</strong> → click any run. Future cleanup item.</p>
+<h3 id="agents">Agents</h3>
+<p>The list of every skill run that's ever happened in this workspace. Status badge (running with pulsing dot, completed, failed), skill id, product name, step count, draft count, relative time. Click a row to expand and see the live tool-call / tool-result trace in monospace. Polls every 4 seconds.</p>
+<h3 id="drafts">Drafts</h3>
+<p>Gallery of every draft saved by every run, across all skills. Filter pills at top (all + one per type — blog_outline, ad_copy, etc.). Each card shows type, time, title, first 400 chars, the skill that produced it, the product name, and a Copy button that puts the full content on the clipboard.</p>
+<h3 id="proposed-actions">Proposed Actions</h3>
+<p>The approvals inbox. Filter pills (pending / approved / rejected / all), live count summary, cards with reasoning + impact + rollback plan, Approve / Reject buttons. Decided cards show their decided-at time. The sidebar item gets a red badge with the pending count.</p>
+<h3 id="seo-reports">SEO Reports</h3>
+<p>Audits history. Lists every audit the agent has saved, newest first. Each card shows the audited URL, big color-coded score (green ≥80, amber ≥60, rose &lt;60), and severity counts (critical / warning / info). Click to expand and see every finding with severity badge, message, and stable check id.</p>
+<h3 id="product-profile">Product Profile</h3>
+<p>The form. Loads from <code>/api/profile</code> on mount, edits a local <code>draft</code> copy, Save button hits <code>PUT /api/profile</code>. Top-right shows the live save state — &quot;Unsaved changes&quot; amber, &quot;✓ Saved Xs ago&quot; emerald. Profile Strength ring on the bottom-right is computed live from a 12-check list; missing items list updates as you fill in fields. The agent reads the saved profile in memory before every run.</p>
+<h3 id="integrations">Integrations</h3>
+<p>The Connections panel. 7 cards (Website, GA4, GSC, GitHub, Meta Ads, WordPress, Email). Each shows a status dot (active / pending / error), a short help line, and a config preview. Info banner at the bottom explains how to wire real OAuth.</p>
+<h3 id="settings">Settings</h3>
+<p>Two sections. <strong>Scheduled Jobs</strong>: list of registered cron jobs with their cron expression and a &quot;Run now&quot; button that hits <code>POST /api/scheduler/run/:jobId</code>. <strong>Rollbackable Tool Calls</strong>: every YELLOW write the agent has done, with status, change ID (linked), and a &quot;Roll back&quot; button that hits <code>POST /api/tool-calls/:id/rollback</code>.</p>
+<h3 id="floating-chat-every-screen">Floating Chat (every screen)</h3>
+<p>Bottom-right gradient button. Click to open a 400×560 panel. Type a question, press Enter, sends to <code>/api/chat</code>. The backend prepends the workspace memory bundle, calls Gemini once, returns the reply. User and assistant messages render in a familiar bubble layout.</p>
+<hr />
+<h2 id="the-full-endpoint-list-updated">8. The full endpoint list (updated)</h2>
+<table>
+<thead>
+<tr>
+<th>Method</th>
+<th>Path</th>
+<th>Purpose</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET</code></td>
+<td><code>/health</code></td>
+<td>Liveness probe.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/agent/start</code></td>
+<td>Launch a skill run. Body: skill + brief. → <code>{ taskId }</code></td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/agent/:taskId</code></td>
+<td>Poll one run.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/agent/:taskId/approve</code></td>
+<td>Legacy approve endpoint (still works; new code uses <code>/api/approvals</code>).</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/skill-runs?status=</code></td>
+<td>Every run, optional filter.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/dashboard-stats</code></td>
+<td>Aggregated counters for the dashboard.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/profile</code></td>
+<td>Read product profile.</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/profile</code></td>
+<td>Save product profile.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/connections</code></td>
+<td>List integrations.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/connections</code></td>
+<td>Create one.</td>
+</tr>
+<tr>
+<td><code>PUT</code></td>
+<td><code>/api/connections/:id</code></td>
+<td>Update one.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/approvals?status=</code></td>
+<td>Inbox feed.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/approvals/:id</code></td>
+<td>One approval.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/approvals/:id/decide</code></td>
+<td>Approve / reject.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/approvals-count</code></td>
+<td>Just <code>{ pending: N }</code>.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/audits</code></td>
+<td>Audits history.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/audits/:id</code></td>
+<td>One audit + all findings.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/tool-calls</code></td>
+<td>Every persisted tool call (YELLOW writes).</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/tool-calls/:id</code></td>
+<td>One.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/tool-calls/:id/rollback</code></td>
+<td>Undo it.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/drafts</code></td>
+<td>Flat gallery of drafts across runs.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/chat</code></td>
+<td>Single-turn Gemini Q&amp;A.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/events?limit=N</code></td>
+<td>Tail the event log.</td>
+</tr>
+<tr>
+<td><code>GET</code></td>
+<td><code>/api/scheduler/jobs</code></td>
+<td>Registered cron jobs.</td>
+</tr>
+<tr>
+<td><code>POST</code></td>
+<td><code>/api/scheduler/run/:jobId</code></td>
+<td>Fire one manually.</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2 id="the-full-folder-map-updated">9. The full folder map (updated)</h2>
+<pre><code>marketing-agent-platform/
+├── AGENTS.md                          # project-wide rules
+├── README.md                          # front door
+├── NOTES.md                           # study notes part 1
+├── NOTES2.md                          # study notes part 2  ← this file
+├── DEMO.md                            # interview walkthrough
+├── marketing-agent-framework.md       # canonical spec
+├── frontend/
+│   ├── AGENTS.md
+│   └── app/
+│       ├── page.tsx                   # ~3500 lines — every screen
+│       ├── layout.tsx
+│       └── globals.css
+├── backend/
+│   ├── AGENTS.md
+│   └── src/
+│       ├── server.ts                  # Express boot + scheduler.register + all routes
+│       ├── routes/
+│       │   ├── agent.ts               # /api/agent/*
+│       │   ├── approvals.ts           # /api/approvals/*
+│       │   ├── tool-calls.ts          # /api/tool-calls/*
+│       │   ├── profile.ts             # /api/profile
+│       │   ├── connections.ts         # /api/connections
+│       │   ├── chat.ts                # /api/chat
+│       │   └── drafts.ts              # /api/drafts
+│       ├── lib/
+│       │   ├── agent-loop.ts          # the agent loop (memory + filter + run)
+│       │   ├── agent-tools.ts         # tool registry (decls + tier + dispatch)
+│       │   ├── agent/
+│       │   │   └── tier-gate.ts       # the gate function
+│       │   ├── connectors/
+│       │   │   ├── types.ts
+│       │   │   ├── site/cheerio.ts
+│       │   │   └── github/mdx.ts      # real Octokit + simulation fallback
+│       │   ├── tools/seo/
+│       │   │   ├── audit-checks.ts
+│       │   │   └── add-alt-text.ts
+│       │   ├── skills/
+│       │   │   └── manifest.ts        # per-skill tool allow-list
+│       │   ├── memory/load.ts         # memory bundler + prompt renderer
+│       │   └── store/                 # 9 in-memory stores + types + barrel
+│       └── scheduler/
+│           ├── index.ts               # node-cron registration
+│           └── weekly-seo-audit.ts
+└── .agents/skills/                    # 41 SKILL.md files
+</code></pre>
+<hr />
+<h2 id="glossary-new-terms-only">10. Glossary — new terms only</h2>
+<p>(Terms already in NOTES.md §13 aren't repeated.)</p>
+<p><strong>Backdrop</strong> — the dimmed area behind a modal. Clicking it usually closes the modal.</p>
+<p><strong>Backoff (exponential)</strong> — wait an increasing amount of time between retries (1s, 2s, 4s, 8s) so you don't hammer a rate-limited service.</p>
+<p><strong>Barrel file</strong> — an <code>index.ts</code> that just re-exports from sibling files so importers can write <code>from &quot;../store&quot;</code> instead of <code>from &quot;../store/skill-runs&quot;</code>. We use them in <code>lib/store/</code>, <code>lib/connectors/</code>, <code>lib/agent/</code>.</p>
+<p><strong>Capability</strong> — a flag a connector exposes (<code>canCrawl</code>, <code>canWriteMeta</code>, etc.). Tools check before calling.</p>
+<p><strong>Chat history</strong> — the list of prior turns in a conversation. We don't persist it today; the chat is single-turn.</p>
+<p><strong>Cleanup function</strong> — the function <code>useEffect</code> returns. Runs on unmount or before re-fire. Where you <code>clearInterval</code>.</p>
+<p><strong>Cron expression</strong> — five fields (minute hour day-of-month month day-of-week) describing when to run.</p>
+<p><strong>Defense in depth</strong> — multiple layers of safety so no single bug is catastrophic. The tier gate + the manifest = two layers blocking unauthorized tool calls.</p>
+<p><strong>Floating Promise</strong> — a Promise no one is awaiting. Often a bug. <code>void</code> is the explicit &quot;yes, I meant to do that.&quot;</p>
+<p><strong>Floating widget</strong> — a UI control rendered fixed-position so it's available regardless of which screen you're on. Our Chat button.</p>
+<p><strong>Graceful degradation</strong> — when the ideal path fails, fall back to a worse-but-working path. The Octokit → simulation fallback is this.</p>
+<p><strong>JSON Schema</strong> — schema language for JSON shapes. Gemini's function-calling tools use a JSON Schema dialect.</p>
+<p><strong>Manifest</strong> — declarative list of &quot;what's allowed.&quot; Our skill-tools manifest.</p>
+<p><strong>Microtask</strong> — JavaScript's &quot;between sync chunks, run these callbacks.&quot; <code>await</code> resumption runs in a microtask.</p>
+<p><strong>Octokit</strong> — GitHub's official Node SDK. We use <code>@octokit/rest</code> for the real PR path.</p>
+<p><strong>PAT (Personal Access Token)</strong> — GitHub authentication shortcut for solo use.</p>
+<p><strong>Polling</strong> — re-fetching on an interval to check for updates. Cheap, simple, behind any firewall. Inferior to true push (WebSockets) for high-frequency updates.</p>
+<p><strong>Pure function</strong> — output depends only on inputs, no side effects. Easy to test.</p>
+<p><strong>Rate limit</strong> — a quota a service enforces. 429 = &quot;you hit it.&quot;</p>
+<p><strong>Real-with-fallback</strong> — implementation pattern where the real integration runs if credentials exist, simulation otherwise. Lets you ship the mechanism before the auth.</p>
+<p><strong>Rollback dispatcher</strong> — the function that, given a tool name + payload, calls the right connector's rollback. Lives in <code>rollbackToolCall()</code> in <code>agent-tools.ts</code>.</p>
+<p><strong>Simulation mode</strong> — running through the motions without making real external calls. The PR write was simulation-only until Step 7.</p>
+<p><strong>Single-turn chat</strong> — each chat message is independent; the backend doesn't remember prior turns. Cheap, simple, less context.</p>
+<p><strong>Skill manifest</strong> — see Manifest above.</p>
+<p><strong>Stable interface</strong> — function signatures don't change when implementation does.</p>
+<p><strong>Status dot</strong> — the small colored circle next to a status. Visual cue at a glance.</p>
+<p><strong><code>void</code> operator</strong> — explicit fire-and-forget for Promises.</p>
+<hr />
+<h2 id="interview-questions-good-answers-part-2">11. Interview questions + good answers (Part 2)</h2>
+<p>(Builds on the 15 answers in NOTES.md §14.)</p>
+<p><strong>Q: Walk me through what happens when I click &quot;Launch a campaign.&quot;</strong></p>
+<p>A: Frontend opens a modal, you pick a skill, fill in the brief. On submit, <code>POST /api/agent/start</code> creates a <code>SkillRun</code> record and kicks the agent loop off in the background. The loop loads memory (profile + recent audits + recent performance) into the prompt, filters the tool declarations through the skill's manifest, then sends the brief to Gemini 2.5 Flash. For each tool Gemini wants to call, the tier gate intercepts — if it's GREEN, run; YELLOW, run + log a notify event + persist a <code>ToolCall</code> record with the rollback payload; RED, block and create an approval. When the agent calls <code>finish</code>, every proposedAction it returned is mirrored into the approvals store. Frontend polls and shows them in the inbox.</p>
+<p><strong>Q: How does the approvals inbox work?</strong></p>
+<p>A: It's a list view over <code>approvalsStore</code>. Two sources fill the store: (1) the agent loop's <code>finish()</code> handler, which mirrors every proposedAction, and (2) the tier gate, which creates an approval whenever a RED-tier tool gets blocked. The inbox polls <code>/api/approvals?status=pending</code> every 5 seconds and renders cards with Approve / Reject buttons that hit <code>/api/approvals/:id/decide</code>. The sidebar's red badge polls a separate cheap <code>/api/approvals-count</code> endpoint.</p>
+<p><strong>Q: How does rollback work for a PR-based write?</strong></p>
+<p>A: When the agent calls <code>add_alt_text</code>, the GitHub connector opens a real PR (or simulated one) and returns a rollback payload — <code>{ owner, repo, prNumber, branch, patches, simulated }</code>. The agent loop stores that payload in the <code>tool-calls</code> store with status <code>executed</code>. When the user clicks Roll back in Settings, <code>POST /api/tool-calls/:id/rollback</code> reads the payload, calls <code>rollbackToolCall(toolName, payload)</code>, which dispatches to the GitHub connector's <code>rollback(&quot;alt-text&quot;, payload)</code>, which calls <code>octokit.pulls.update({ state: &quot;closed&quot; })</code>. Tool call status flips to <code>rolled_back</code>. Event logged.</p>
+<p><strong>Q: Why simulate the GitHub PR before integrating for real?</strong></p>
+<p>A: To prove the mechanism end-to-end (gate → tool → store → rollback endpoint) without spending OAuth time. The connector has a stable interface — <code>fixAltText(patches) → WriteResult</code>. Whether the body opens a real PR or logs a simulated one doesn't matter to callers. When we wired Octokit later, only the connector body changed.</p>
+<p><strong>Q: How does the agent get context about my product?</strong></p>
+<p>A: A pure function called <code>loadMemory(workspaceId)</code> bundles: product profile (industry, voice, ICP, north star), recent audits (last 5), recent performance (last 7 days). The bundle is rendered to text by <code>renderMemoryForPrompt()</code> and prepended to the agent's initial prompt. The agent never writes the profile — only the user does, via the Product Profile form.</p>
+<p><strong>Q: What is the weekly cron job doing?</strong></p>
+<p>A: <code>weekly-seo-audit</code> reads the workspace's profile, picks up the <code>siteUrl</code>, kicks off a <code>seo-audit</code> run with a synthesized brief (&quot;audit this URL, propose 2-3 fixes, reference recent audits if any&quot;). Registered with <code>node-cron</code> at <code>0 6 * * 1</code> — every Monday 6am local time. A manual trigger endpoint exists for testing.</p>
+<p><strong>Q: Why filter tools per skill?</strong></p>
+<p>A: Defense in depth. The skill manifest controls what Gemini <em>sees</em> — a copywriting skill won't even be told <code>pause_ad_set</code> exists. The tier gate enforces at dispatch — if Gemini somehow asks for a tool it shouldn't, the gate blocks it. Two layers means a single mistake doesn't break safety.</p>
+<p><strong>Q: How does the Chat differ from the agent loop?</strong></p>
+<p>A: The agent loop is multi-step: it picks a tool, looks at the result, decides next. The Chat is single-turn: one Gemini call, no tools, just the memory bundle + the user's message → a text reply. It's for reactive Q&amp;A (&quot;summarize my last audit&quot;), not for doing work.</p>
+<p><strong>Q: What would you build next?</strong></p>
+<p>A: Three things. (1) Replace in-memory <code>Map</code>s with <code>better-sqlite3</code> so a restart doesn't wipe everything — one file per store changes, the rest stays. (2) Real OAuth flows for GA4 / GSC / Meta Ads so the agent has real performance data in memory. (3) Streaming chat with Server-Sent Events so the assistant feels responsive.</p>
+<p><strong>Q: How would you handle a Gemini 429?</strong></p>
+<p>A: Exponential backoff with a queue. First retry after 1s, then 2s, 4s, 8s, give up at 30s. If the backoff window exceeds the user's patience, return a structured &quot;rate-limited, try again in N seconds&quot; error instead of timing out silently. For scheduled jobs (the cron), shift to a real durable scheduler like Inngest so retries are free.</p>
+<p><strong>Q: Walk me through how you'd add a new tool.</strong></p>
+<p>A: Pick a category folder under <code>lib/tools/&lt;category&gt;/</code>. Write the pure implementation (<code>addAltText(input) → result</code>). Add a declaration to <code>toolDeclarations</code> so Gemini knows about it. Add an entry to <code>toolMeta</code> with the tier — if it writes and you can't rollback, RED. Add a <code>case</code> in <code>executeTool</code>. If it writes, also branch in <code>rollbackToolCall()</code>. Add the tool name to the manifests of skills that should use it. Write a unit test that calls the tool with sample input and asserts the output shape. Type-check.</p>
+<p><strong>Q: Walk me through how you'd add a new screen.</strong></p>
+<p>A: New component in <code>page.tsx</code> (until we split). Fetch data from <code>/api/&lt;resource&gt;</code> in a <code>useEffect</code>. Render with the same design tokens — <code>rounded-2xl</code> cards, <code>bg-white</code>, slate borders, indigo accents. Add a <code>nav === &quot;&lt;id&gt;&quot;</code> case in <code>Home()</code> and route to it. If the data needs to live update, add a <code>setInterval</code> and clean it up. If the screen has actions (Approve, Roll back, Run now), POST to the corresponding endpoint and re-fetch.</p>
+<p><strong>Q: How would you scale this to multi-tenant?</strong></p>
+<p>A: Every store keys by <code>workspaceId</code> already (we just hard-code <code>DEFAULT_WORKSPACE_ID</code>). Add Clerk auth to the frontend. Add an Express middleware that pulls <code>workspaceId</code> from the auth context and attaches it to <code>req</code>. Replace <code>DEFAULT_WORKSPACE_ID</code> references in routes with <code>req.workspaceId</code>. The agent loop and tools don't change — they already take a workspaceId.</p>
+<p><strong>Q: What's the role of the event log?</strong></p>
+<p>A: It's the single source of truth for &quot;something happened.&quot; Every gate decision, tool call, approval creation, rollback, scheduler tick, LLM call writes one event. The dashboard activity feed reads from it. Debugging issues post-hoc reads from it. Future analytics will read from it. Routes never <code>console.log</code> business data — they emit events. This is the foundation for an audit trail when we eventually deploy to a real environment.</p>
+<p><strong>Q: How do you keep the codebase navigable for someone new?</strong></p>
+<p>A: Three docs. Root <code>AGENTS.md</code> has the rules. <code>frontend/AGENTS.md</code> and <code>backend/AGENTS.md</code> scope them. The framework spec is canonical. The <code>NOTES.md</code> files are interview-prep / study. The README has the architecture diagram + how-to-extend. Inside the code, every file's top comment explains its purpose, every store has a single responsibility, and every tool follows the same shape (declaration → tier → dispatch → optional rollback). A new contributor can be productive in an hour.</p>
+<hr />
+<h2 id="final-whats-not-built-list">12. Final &quot;what's NOT built&quot; list</h2>
+<p>The 7-step build plan is <strong>complete</strong>. Honest list of what's deliberately deferred:</p>
+<ol>
+<li><strong>No real database</strong> — <code>Map</code> only. Restart wipes everything.</li>
+<li><strong>No auth</strong> — single workspace, single user.</li>
+<li><strong>OAuth for GA4 / GSC / Meta Ads / WordPress / Email</strong> — connections seeded as &quot;pending&quot; with no auth flow yet.</li>
+<li><strong>Durable scheduler</strong> — <code>node-cron</code> doesn't survive process restart.</li>
+<li><strong>Chat is single-turn + non-streaming</strong>.</li>
+<li><strong><code>page.tsx</code> is one ~3500-line file</strong> — should split into <code>views/</code> + <code>components/</code> per the frontend AGENTS.md.</li>
+<li><strong>Campaigns screen still shows mock SEO trace</strong> — real trace lives in Agents.</li>
+<li><strong>No backoff / queue for Gemini 429s</strong>.</li>
+<li><strong>No deploy config</strong> (Vercel / Render / Fly).</li>
+<li><strong>No <code>.skill.json</code> per-skill input schemas</strong> — the skill manifest only controls the tool set, not per-skill input shape.</li>
+</ol>
+<p>None of these break the architecture. All are swap-when-needed.</p>
+<hr />
+<h2 id="how-to-demo-every-screen-step-by-step">13. How to demo every screen (step-by-step)</h2>
+<pre><code class="language-powershell"># Terminal 1
+cd c:\Users\devan\OneDrive\Desktop\marketing-agent-platform\backend
+npm run dev
+
+# Terminal 2
+cd c:\Users\devan\OneDrive\Desktop\marketing-agent-platform\frontend
+npm run dev
+</code></pre>
+<p>Open http://localhost:3000.</p>
+<p><strong>1. Dashboard</strong> — point at &quot;Good evening, Devansh.&quot; Sub-line shows live counts. Click the floating purple chat button at bottom-right, ask &quot;summarize my workspace.&quot; Close.</p>
+<p><strong>2. Product Profile</strong> — sidebar. Form is populated. Edit the Tagline. Top-right shows &quot;Unsaved changes&quot; amber → click Save → &quot;✓ Saved Xs ago&quot; green. The Profile Strength ring updates as you fill fields.</p>
+<p><strong>3. + New Run</strong> — sidebar button. Pick SEO Audit, productName = &quot;Demo&quot;, campaignGoal = &quot;Audit <a href="https://example.com">https://example.com</a> using audit_seo.&quot; Launch agents.</p>
+<p><strong>4. Proposed Actions</strong> — auto-navigated here. Wait ~30s. Pending approvals appear; sidebar shows a red badge. Filter pills work. Approve one — status flips, badge drops.</p>
+<p><strong>5. SEO Reports</strong> — sidebar. The audit from step 3 is here. Click to expand findings.</p>
+<p><strong>6. Agents</strong> — sidebar. The run from step 3 is listed with status <code>completed</code>. Click to expand and see the trace (<code>tool_call audit_seo</code>, <code>tool_result</code>, <code>tool_call finish</code>).</p>
+<p><strong>7. Drafts</strong> — sidebar. If the agent saved any drafts, they're here. Copy button works.</p>
+<p><strong>8. Integrations</strong> — sidebar. 7 connection cards. Website is <code>active</code>, GitHub is <code>pending</code> (unless you set <code>GITHUB_TOKEN</code>), others are <code>pending</code>.</p>
+<p><strong>9. Settings</strong> — sidebar. Two sections. Click <strong>Run now</strong> on <code>weekly-seo-audit</code> — fires another run. If a YELLOW write has run (force one via the DEMO.md script), click <strong>Roll back</strong> on it — status flips to <code>rolled_back</code>.</p>
+<p><strong>10. Floating Chat</strong> — bottom-right on every screen. Ask &quot;what should I work on next?&quot; — gets a context-aware reply from Gemini referencing your profile and recent audits.</p>
+<p>The whole tour fits in 5 minutes.</p>
+<hr />
+<h2 id="end-of-part-2">End of Part 2</h2>
+<p>Combined with <a href="NOTES.md">NOTES.md</a> and <a href="DEMO.md">DEMO.md</a>, this is the full study + interview kit. Everything in code is explained somewhere in these three files plus the AGENTS.md set.</p>
+<p>Last updated after the build plan completed.</p>
+</body></html>
